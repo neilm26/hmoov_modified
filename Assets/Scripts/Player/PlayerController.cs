@@ -4,6 +4,7 @@ using Photon.Bolt;
 public class PlayerController : EntityBehaviour<IPhysicState>
 {
     private PlayerMotor _playerMotor;
+    private PlayerWeapons _playerWeapons;
     private bool _forward;
     private bool _backward;
     private bool _left;
@@ -12,6 +13,10 @@ public class PlayerController : EntityBehaviour<IPhysicState>
     private float _pitch;
     private bool _jump;
 
+    private bool _fire;
+    private bool _aiming;
+    private bool _reload;
+
     private bool _hasControl = false;
 
     private float _mouseSensitivity = 5f;
@@ -19,19 +24,20 @@ public class PlayerController : EntityBehaviour<IPhysicState>
     public void Awake()
     {
         _playerMotor = GetComponent<PlayerMotor>();
+        _playerWeapons = GetComponent<PlayerWeapons>();
     }
 
     public override void Attached()
     {
-        state.SetTransforms(state.Transform, transform);
-        if(entity.HasControl)
+        if (entity.HasControl)
         {
             _hasControl = true;
-            GUI_Ctroller.Current.Show(true);
+            GUI_Controller.Current.Show(true);
         }
 
         Init(entity.HasControl);
         _playerMotor.Init(entity.HasControl);
+        _playerWeapons.Init();
     }
 
     public void Init(bool isMine)
@@ -42,11 +48,11 @@ public class PlayerController : EntityBehaviour<IPhysicState>
             FindObjectOfType<PlayerSetupController>().SceneCamera.gameObject.SetActive(false);
         }
     }
+
     private void Update()
     {
-        if(_hasControl)
+        if (_hasControl)
             PollKeys();
-        
     }
 
     private void PollKeys()
@@ -57,12 +63,16 @@ public class PlayerController : EntityBehaviour<IPhysicState>
         _right = Input.GetKey(KeyCode.D);
         _jump = Input.GetKey(KeyCode.Space);
 
+        _fire = Input.GetMouseButton(0);
+        if (_fire)
+            _aiming = Input.GetMouseButton(1);
+            _reload = Input.GetKey(KeyCode.R);
+
         _yaw += Input.GetAxisRaw("Mouse X") * _mouseSensitivity;
         _yaw %= 360f;
         _pitch += -Input.GetAxisRaw("Mouse Y") * _mouseSensitivity;
-        _pitch = Mathf.Clamp(_pitch, -90, 90);
+        _pitch = Mathf.Clamp(_pitch, -85, 85);
     }
-
 
     public override void SimulateController()
     {
@@ -75,9 +85,14 @@ public class PlayerController : EntityBehaviour<IPhysicState>
         input.Pitch = _pitch;
         input.Jump = _jump;
 
+        input.Fire = _fire;
+        input.Scope = _aiming;
+        input.Reload = _reload;
+
         entity.QueueInput(input);
 
-        _playerMotor.ExecuteCommand(_forward, _backward, _left, _right, _jump, _yaw, _pitch);
+        _playerMotor.ExecuteCommand(_forward, _backward, _left, _right,_jump, _yaw, _pitch);
+        _playerWeapons.ExecuteCommand(_fire, _aiming, _reload, BoltNetwork.ServerFrame % 1024);
     }
 
 
@@ -85,23 +100,30 @@ public class PlayerController : EntityBehaviour<IPhysicState>
     {
         PlayerCommand cmd = (PlayerCommand)command;
 
-        if(resetState)
+        if (resetState)
         {
             _playerMotor.SetState(cmd.Result.Position, cmd.Result.Rotation);
-        } else
+        }
+        else
         {
             PlayerMotor.State motorState = new PlayerMotor.State();
 
             if (!entity.HasControl)
             {
                 motorState = _playerMotor.ExecuteCommand(
-                    cmd.Input.Forward,
-                    cmd.Input.Backward,
-                    cmd.Input.Left,
-                    cmd.Input.Right,
-                    cmd.Input.Jump,
-                    cmd.Input.Yaw,
-                    cmd.Input.Pitch);
+                cmd.Input.Forward,
+                cmd.Input.Backward,
+                cmd.Input.Left,
+                cmd.Input.Right,
+                cmd.Input.Jump,
+                cmd.Input.Yaw,
+                cmd.Input.Pitch);
+
+                _playerWeapons.ExecuteCommand(
+                cmd.Input.Fire, 
+                cmd.Input.Scope, 
+                cmd.Input.Reload, 
+                cmd.ServerFrame % 1024);
             }
 
             cmd.Result.Position = motorState.position;

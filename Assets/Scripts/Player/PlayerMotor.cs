@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Photon.Bolt; 
 
-public class PlayerMotor : EntityBehaviour<IPhysicState>
+public class PlayerMotor : EntityBehaviour<IPlayerState>
 {
 
     [SerializeField]
@@ -21,11 +21,15 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
 
     [SerializeField]
     private int _totalLife = 250;
+
+    SphereCollider _headCollider;
+
     public int TotalLife { get => _totalLife; }
 
     private void Awake()
     {
         _networkRigidbody = GetComponent<NetworkRigidbody>();
+        _headCollider = GetComponent<SphereCollider>();
     }
 
     public void Init(bool isMine)
@@ -68,11 +72,20 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
         _cam.transform.localEulerAngles = new Vector3(pitch, 0f, 0f);
         transform.rotation = Quaternion.Euler(0, yaw, 0);
 
+        if (entity.IsOwner)
+            state.Pitch = (int)pitch;
+
         State stateMotor = new State();
         stateMotor.position = transform.position;
         stateMotor.rotation = yaw;
 
         return stateMotor;
+    }
+
+    public void SetPitch()
+    {
+        if (!entity.IsControllerOrOwner)
+            _cam.transform.localEulerAngles = new Vector3(state.Pitch, 0f, 0f);
     }
 
     private void FixedUpdate()
@@ -111,7 +124,7 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
         if (Mathf.Abs(rotation - transform.rotation.y) > 5f)
             transform.rotation = Quaternion.Euler(0, rotation, 0);
 
-        if(_firstState)
+        if (_firstState)
         {
             if (position != Vector3.zero)
             {
@@ -119,7 +132,7 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
                 _firstState = false;
                 _lastServerPos = Vector3.zero;
             }
-        } 
+        }
         else
         {
             if (position != Vector3.zero)
@@ -128,6 +141,33 @@ public class PlayerMotor : EntityBehaviour<IPhysicState>
             }
 
             transform.position += (_lastServerPos - transform.position) * 0.5f;
+        }
+    }
+
+    public bool IsHeadshot(Collider c)
+    {
+        return c == _headCollider;
+    }
+
+    public void Life(PlayerMotor killer, int life)
+    {
+        Debug.Log("Life in PlayerMotor.cs is running");
+        if(entity.IsOwner)
+        {
+            int value = state.LifePoints + life;
+
+            if(value < 0)
+            {
+                state.LifePoints = 0;
+            }
+            else if (value > _totalLife)
+            {
+                state.LifePoints = _totalLife;
+            }
+            else
+            {
+                state.LifePoints = value;
+            }
         }
     }
 
