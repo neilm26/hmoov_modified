@@ -10,18 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d51bd4adeed4a324ba21a602fc14c316, type: 3}
-  m_Name: AK1000
+  m_Name: BRS555
   m_EditorClassIdentifier: 
-  weaponName: AK-1000
+  ID: 2
+  weaponName: BRS-555
   reloadTime: 1
   magazin: 30
   totalMagazin: 120
   ammoPerShot: 1
   multiShot: 1
-  rpm: 600
-  dmg: 25
-  maxRange: 30
+  rpm: 550
+  dmg: 51
+  maxRange: 300
   precision: 0.3
   trail: {fileID: 9084460383817206584, guid: 43b8eb07410caf0458b01aeb4c4eeeb0, type: 3}
   decal: {fileID: 6301483959452287413, guid: f42d47b400bb67346b9f0627a8940f4a, type: 3}
   impact: {fileID: 114028477942468608, guid: 01826d6ad4ed4e441aa706e1caf2f032, type: 3}
+  drop: {fileID: 7544045393414888380, guid: 3e06faa5974987a4b93e3908e2a77e0f, type: 3}

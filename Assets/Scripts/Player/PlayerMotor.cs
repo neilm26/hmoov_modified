@@ -9,6 +9,7 @@ public class PlayerMotor : EntityBehaviour<IPlayerState>
     private NetworkRigidbody _networkRigidbody = null;
 
     private float _speed = 7f;
+    private float _speedBase = 7f;
 
     private Vector3 _lastServerPos = Vector3.zero;
     private bool _firstState = true;
@@ -26,6 +27,10 @@ public class PlayerMotor : EntityBehaviour<IPlayerState>
 
     public int TotalLife { get => _totalLife; }
 
+    public float Speed { get => _speed; set => _speed = value; }
+
+    public float SpeedBase { get => _speedBase; }
+
     private void Awake()
     {
         _networkRigidbody = GetComponent<NetworkRigidbody>();
@@ -34,8 +39,10 @@ public class PlayerMotor : EntityBehaviour<IPlayerState>
 
     public void Init(bool isMine)
     {
+        
         if (isMine)
             _cam.gameObject.SetActive(true);
+        Debug.Log("ran _cam.gameObject.SetActive(true);");
     }
 
     public State ExecuteCommand(bool forward, bool backward, bool left, bool right, bool jump, float yaw, float pitch)

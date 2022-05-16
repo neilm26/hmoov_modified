@@ -5,6 +5,8 @@
 public class WeaponStats : ScriptableObject
 {
     [Space(40)]
+    public WeaponID ID;
+    [Space(10)]
     public string weaponName;
     public float reloadTime = 1f;
     public int magazin = 30;
@@ -21,6 +23,8 @@ public class WeaponStats : ScriptableObject
     public GameObject trail;
     public GameObject decal;
     public GameObject impact;
+    [Space(10)]
+    public GameObject drop;
     
     
 }

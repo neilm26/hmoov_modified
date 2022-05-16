@@ -33,10 +33,30 @@ public class Weapon : MonoBehaviour
     }
 
     public WeaponStats WeaponStat { get => _weaponStat; }
-    public int CurrentAmmo { get => _currentAmmo; }
-    public int TotalAmmo { get => _currentTotalAmmo; }
 
-    public virtual void Init(PlayerWeapons pw)
+    public int CurrentAmmo
+    {
+        get => _currentAmmo;
+        set
+        {
+            if (_playerMotor.entity.IsOwner)
+                _playerMotor.state.Weapons[_playerWeapons.WeaponIndex].CurrentAmmo = value;
+            _currentAmmo = value;
+        }
+    }
+
+    public int TotalAmmo
+    {
+        get => _currentTotalAmmo;
+        set
+        {
+            if (_playerMotor.entity.IsOwner)
+                _playerMotor.state.Weapons[_playerWeapons.WeaponIndex].TotalAmmo = value;
+            _currentTotalAmmo = value;
+        }
+    }
+
+    public virtual void Init(PlayerWeapons pw, int index)
     {
         Debug.Log("Init in Weapon.cs is running");
         _playerWeapons = pw;
@@ -44,14 +64,50 @@ public class Weapon : MonoBehaviour
         _playerCallback = pw.GetComponent<PlayerCallback>();
         _camera = _playerWeapons.Cam.transform;
 
-        if (!_playerMotor.entity.HasControl)
+        if(_playerMotor.state.Weapons[index].CurrentAmmo != -1)
         {
-            _renderer.gameObject.layer = 0;
+            _currentAmmo = _playerMotor.state.Weapons[index].CurrentAmmo;
+            _currentTotalAmmo = _playerMotor.state.Weapons[index].TotalAmmo;
+        }
+        else
+        {
+            _currentAmmo = _weaponStat.magazin;
+            _currentTotalAmmo = _weaponStat.totalMagazin;
+            if(_playerMotor.entity.IsOwner)
+            {
+                _playerMotor.state.Weapons[index].CurrentAmmo = _currentAmmo;
+                _playerMotor.state.Weapons[index].TotalAmmo = _currentTotalAmmo;
+            }
         }
 
-        _currentAmmo = _weaponStat.magazin;
-        _currentTotalAmmo = _weaponStat.totalMagazin;
+        if (!_playerMotor.entity.HasControl)
+            _renderer.gameObject.layer = 0;
 
+    }
+
+    private void OnEnable()
+    {
+        if (_playerWeapons)
+        {
+            if (_playerWeapons.entity.IsControllerOrOwner)
+            {
+                if (CurrentAmmo == 0)
+                    _reloadCrt = StartCoroutine(Reloading());
+            }
+            if (_playerWeapons.entity.HasControl)
+            {
+                GUI_Controller.Current.UpdateAmmo(CurrentAmmo, TotalAmmo);
+            }
+        }
+    }
+
+    private void OnDisable()
+    {
+        if(_isReloading)
+        {
+            _isReloading = false;
+            StopCoroutine(_reloadCrt);
+        }
     }
 
     public virtual void ExecuteCommand(bool fire, bool aiming, bool reload, int seed)
@@ -59,7 +115,7 @@ public class Weapon : MonoBehaviour
         //Debug.Log("ExecuteCommand in Weapon.cs is running"); confirmed to be running
         if (!_isReloading)
         {
-            if (reload && _currentAmmo != _weaponStat.magazin && _currentTotalAmmo > 0)
+            if (reload && CurrentAmmo != _weaponStat.magazin && TotalAmmo > 0)
             {
                 _Reload();
             }
@@ -76,7 +132,7 @@ public class Weapon : MonoBehaviour
     protected virtual void _Fire(int seed)
     {
         Debug.Log("_Fire in Weapon.cs is running"); // confirmed to be running
-        if (_currentAmmo >= _weaponStat.ammoPerShot)
+        if (CurrentAmmo >= _weaponStat.ammoPerShot)
         {
             if (_fireFrame + _fireInterval <= BoltNetwork.ServerFrame)
             {
@@ -88,7 +144,7 @@ public class Weapon : MonoBehaviour
                 if (_playerCallback.entity.HasControl)
                     FireEffect(seed, WeaponStat.precision);
 
-                _currentAmmo -= _weaponStat.ammoPerShot;
+                CurrentAmmo -= _weaponStat.ammoPerShot;
                 Random.InitState(seed);
 
                 _dmgCounter = new Dictionary<PlayerMotor, int>();
@@ -134,7 +190,7 @@ public class Weapon : MonoBehaviour
                 Debug.Log("foreach (PlayerMotor pm in _dmgCounter.Keys) pm.Life(_playerMotor, _dmgCounter[pm]); ");
             }
         }
-        else if (_currentTotalAmmo > 0)
+        else if (TotalAmmo > 0)
         {
             _Reload();
         }
@@ -186,6 +242,14 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    public virtual void InitAmmo(int current, int total)
+    {
+        _currentAmmo = current;
+        _currentTotalAmmo = total;
+        if (_playerCallback.entity.HasControl)
+            GUI_Controller.Current.UpdateAmmo(current, total);
+    }
+
     protected void _Reload()
     {
         Debug.Log("_Reload in Weapon.cs is running");
@@ -198,10 +262,10 @@ public class Weapon : MonoBehaviour
         Debug.Log("Reloading in Weapon.cs is running");
         _isReloading = true;
         yield return new WaitForSeconds(_weaponStat.reloadTime);
-        _currentTotalAmmo += _currentAmmo;
-        int _ammo = Mathf.Min(_currentTotalAmmo, _weaponStat.magazin);
-        _currentTotalAmmo -= _ammo;
-        _currentAmmo = _ammo;
+        TotalAmmo += CurrentAmmo;
+        int _ammo = Mathf.Min(TotalAmmo, _weaponStat.magazin);
+        TotalAmmo -= _ammo;
+        CurrentAmmo = _ammo;
         _isReloading = false;
     }
 }

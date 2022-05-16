@@ -20,6 +20,7 @@ public class UI_HealthBar : MonoBehaviour
         Color c = _gradient.Evaluate(f);
         _bg.color = new Color(c.r, c.g, c.b, _bg.color.a);
         _bar.color = c;
+        //_text.color = new Color(c.r , c.g , c.b , _text.color.a);
         _text.text = hp.ToString();
     }
 }
