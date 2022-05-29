@@ -43,8 +43,8 @@ public class PlayerWeapons : Photon.Bolt.EntityBehaviour<IPlayerState>
         }
         StartCoroutine(SetWeapon());
         _weapons[0].Init(this,0);
-        Debug.Log("State of is owner : ");
-        Debug.Log(entity.IsOwner);
+        //Debug.Log("State of is owner : ");
+        //Debug.Log(entity.IsOwner);
         Debug.Log("Init weapons complete");
     }
 

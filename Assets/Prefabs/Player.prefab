@@ -418,6 +418,9 @@ GameObject:
   - component: {fileID: 7347994145965144728}
   - component: {fileID: 443897493082431376}
   - component: {fileID: 1371645547822608337}
+  - component: {fileID: 5957649904564602172}
+  - component: {fileID: 9221611002622677554}
+  - component: {fileID: 7233468666233435487}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -499,7 +502,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sceneGuid: 
   _serializerGuid: 5eea4a12-9c9e-42c5-8ce2-9038850157e7
-  _prefabId: 1
+  _prefabId: 2
   _updateRate: 1
   _autoFreezeProxyFrames: 0
   _clientPredicted: 1
@@ -540,6 +543,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cam: {fileID: 7576195232292543414}
   _totalLife: 250
+  _skill: {fileID: 7233468666233435487}
+  _grenade: {fileID: 0}
 --- !u!114 &7347994145965144728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -592,6 +597,53 @@ MonoBehaviour:
   - {fileID: 3655611998962432170, guid: f067350c04a113c4292fdc5845ae9aa6, type: 3}
   - {fileID: 6588423056509370247, guid: 14c3f64de11a30041a6a019ec355a116, type: 3}
   - {fileID: 7705929395339967362, guid: 6a9967a11f93e794a9fff76ad99f615e, type: 3}
+--- !u!114 &5957649904564602172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8201929463577478242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3762bfc6baa9c4f41ba8748603f30e43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cam: {fileID: 3486728517633047275}
+--- !u!114 &9221611002622677554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8201929463577478242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 350c499f11c8277468dce49b33fa65ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cam: {fileID: 3486728517633047275}
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  _wallPreset: {fileID: 1395368594833480314, guid: 9ea6dd9989ebab1498877a482a4a2581, type: 3}
+  _stateMachine: {fileID: 1062286780524860909, guid: 1e6d397905943724f929b471cffc7f8e, type: 3}
+--- !u!114 &7233468666233435487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8201929463577478242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1af66bac2c7308d45b8f2a90cba63c42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cam: {fileID: 3486728517633047275}
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 1
 --- !u!1 &8472804106541696199
 GameObject:
   m_ObjectHideFlags: 0

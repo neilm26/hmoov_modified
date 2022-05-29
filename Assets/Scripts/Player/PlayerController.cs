@@ -105,9 +105,13 @@ public class PlayerController : EntityBehaviour<IPhysicState>
         input.Reload = _reload;
         input.Wheel = _wheel;
 
+        input.Ability1 = _ability1;
+        input.Ability2 = _ability2;
+
+
         entity.QueueInput(input);
 
-        _playerMotor.ExecuteCommand(_forward, _backward, _left, _right, _jump, _yaw, _pitch);
+        _playerMotor.ExecuteCommand(_forward, _backward, _left, _right, _jump, _yaw, _pitch, _ability1, _ability2);
         _playerWeapons.ExecuteCommand(_fire, _aiming, _reload, _wheel, BoltNetwork.ServerFrame % 1024, _drop);
     }
 
@@ -133,7 +137,9 @@ public class PlayerController : EntityBehaviour<IPhysicState>
                 cmd.Input.Right,
                 cmd.Input.Jump,
                 cmd.Input.Yaw,
-                cmd.Input.Pitch);
+                cmd.Input.Pitch,
+                cmd.Input.Ability1,
+                cmd.Input.Ability2);
 
                 _playerWeapons.ExecuteCommand(
                 cmd.Input.Fire,

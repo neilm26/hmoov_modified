@@ -19,6 +19,7 @@ public class PlayerCallback : EntityEventListener<IPlayerState>
     {
         state.AddCallback("LifePoints", UpdatePlayerLife);
         state.AddCallback("Pitch", _playerMotor.SetPitch);
+        state.AddCallback("Energy", UpdateEnergy);
         state.AddCallback("WeaponIndex", UpdateWeaponIndex);
         state.AddCallback("Weapons[].ID", UpdateWeaponList);
         state.AddCallback("Weapons[].CurrentAmmo", UpdateWeaponAmmo);
@@ -27,6 +28,7 @@ public class PlayerCallback : EntityEventListener<IPlayerState>
         if (entity.IsOwner)
         {
             state.LifePoints = _playerMotor.TotalLife;
+            state.Energy = 6;
         }
     }
 
@@ -80,5 +82,13 @@ public class PlayerCallback : EntityEventListener<IPlayerState>
     {
         if(entity.HasControl)
             GUI_Controller.Current.UpdateLife(state.LifePoints, _playerMotor.TotalLife);
+    }
+
+    public void UpdateEnergy()
+    {
+        if (entity.HasControl)
+        {
+            GUI_Controller.Current.UpdateAbilityView(state.Energy);
+        }
     }
 }

@@ -25,6 +25,11 @@ public class PlayerMotor : EntityBehaviour<IPlayerState>
 
     SphereCollider _headCollider;
 
+    [SerializeField]
+    private Ability _skill = null;
+    [SerializeField]
+    private Ability _grenade = null;
+
     public int TotalLife { get => _totalLife; }
 
     public float Speed { get => _speed; set => _speed = value; }
@@ -42,10 +47,10 @@ public class PlayerMotor : EntityBehaviour<IPlayerState>
         
         if (isMine)
             _cam.gameObject.SetActive(true);
-        Debug.Log("ran _cam.gameObject.SetActive(true);");
+        //Debug.Log("ran _cam.gameObject.SetActive(true);");
     }
 
-    public State ExecuteCommand(bool forward, bool backward, bool left, bool right, bool jump, float yaw, float pitch)
+    public State ExecuteCommand(bool forward, bool backward, bool left, bool right, bool jump, float yaw, float pitch, bool ability1, bool ability2)
     {
         Vector3 movingDir = Vector3.zero;
         if (forward ^ backward)
@@ -81,6 +86,11 @@ public class PlayerMotor : EntityBehaviour<IPlayerState>
 
         if (entity.IsOwner)
             state.Pitch = (int)pitch;
+
+        if (_skill) 
+            _skill.UpdateAbility(ability1); //confirmed to be running
+        if (_grenade)
+            _grenade.UpdateAbility(ability2); //confirmed to be running
 
         State stateMotor = new State();
         stateMotor.position = transform.position;

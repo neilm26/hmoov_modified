@@ -18,19 +18,19 @@ public class NetworkManager : Photon.Bolt.GlobalEventListener
     {
         FeedbackUser("Attempting to Connect....");
         BoltLauncher.StartClient();
-        Debug.Log("ran Connect");
+        //Debug.Log("ran Connect");
     }
 
     public override void SessionListUpdated(Map<Guid, UdpSession> sessionList)
     {
         FeedbackUser("Searching....");
         BoltMatchmaking.JoinSession(HeadlessServerManager.RoomID());
-        Debug.Log("ran SessionListUpdated");
+        //Debug.Log("ran SessionListUpdated");
     }
 
     public override void Connected(BoltConnection connection)
     {
         FeedbackUser("Connected!");
-        Debug.Log("ran Connected");
+        //Debug.Log("ran Connected");
     }
 }

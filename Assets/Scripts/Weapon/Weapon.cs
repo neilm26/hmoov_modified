@@ -58,7 +58,7 @@ public class Weapon : MonoBehaviour
 
     public virtual void Init(PlayerWeapons pw, int index)
     {
-        Debug.Log("Init in Weapon.cs is running");
+        //Debug.Log("Init in Weapon.cs is running");
         _playerWeapons = pw;
         _playerMotor = pw.GetComponent<PlayerMotor>();
         _playerCallback = pw.GetComponent<PlayerCallback>();
@@ -154,7 +154,7 @@ public class Weapon : MonoBehaviour
                     Vector2 rnd = Random.insideUnitSphere * _weaponStat.precision;
                     Ray r = new Ray(_camera.position, (_camera.forward * 10f) + (_camera.up * rnd.y) + (_camera.right * rnd.x));
                     RaycastHit rh;
-                    Debug.Log("bulet has been shot");
+                    //Debug.Log("bulet has been shot");
                     if (Physics.Raycast(r, out rh, _weaponStat.maxRange))
                     {
                         PlayerMotor target = rh.transform.GetComponent<PlayerMotor>();
@@ -259,7 +259,7 @@ public class Weapon : MonoBehaviour
 
     IEnumerator Reloading()
     {
-        Debug.Log("Reloading in Weapon.cs is running");
+        //Debug.Log("Reloading in Weapon.cs is running");
         _isReloading = true;
         yield return new WaitForSeconds(_weaponStat.reloadTime);
         TotalAmmo += CurrentAmmo;
