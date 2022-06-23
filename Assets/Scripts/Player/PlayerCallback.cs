@@ -91,4 +91,15 @@ public class PlayerCallback : EntityEventListener<IPlayerState>
             GUI_Controller.Current.UpdateAbilityView(state.Energy);
         }
     }
+
+    public void RaiseFlashEvent()
+    {
+        FlashEvent evnt = FlashEvent.Create(entity, EntityTargets.OnlyController);
+        evnt.Send();
+    }
+
+    public override void OnEvent(FlashEvent evnt)
+    {
+        GUI_Controller.Current.Flash();
+    }
 }

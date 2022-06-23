@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: BoltProtocolTokenRegistry
   m_EditorClassIdentifier: 
   protocolTokenRegistry:
+  - DisplayName: PlayerToken
+    AssemblyName: PlayerToken, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   - DisplayName: WeaponDropToken
     AssemblyName: WeaponDropToken, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null

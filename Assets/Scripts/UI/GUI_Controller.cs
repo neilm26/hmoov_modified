@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class GUI_Controller : MonoBehaviour
@@ -35,6 +36,10 @@ public class GUI_Controller : MonoBehaviour
     public UI_Cooldown Skill { get => _skill; }
     public UI_Cooldown Grenade { get => _grenade; }
 
+    [SerializeField]
+    private Image _blindMask = null;
+    Coroutine blind;
+
     private void Start()
     {
         Show(false);
@@ -69,6 +74,30 @@ public class GUI_Controller : MonoBehaviour
         _energyCount.text = i.ToString();
         _skill.UpdateCost(i);
         _grenade.UpdateCost(i);
+    }
+
+    public void Flash()
+    {
+
+        if (blind != null)
+            StopCoroutine(blind);
+        blind = StartCoroutine(CRT_Blind(3f));
+    }
+
+    IEnumerator CRT_Blind(float f)
+    {
+        float startTime = Time.time;
+        while (startTime + f > Time.time)
+        {
+            _blindMask.color = new Color(1, 1, 1, 1);
+            yield return null;
+            while (startTime + f - 1 < Time.time && startTime + f > Time.time)
+            {
+                _blindMask.color = new Color(1, 1, 1, -(Time.time - (startTime + f)));
+                yield return null;
+            }
+        }
+        _blindMask.color = new Color(1, 1, 1, 0);
     }
 
 }

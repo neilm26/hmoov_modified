@@ -9,5 +9,6 @@ public class NetworkCallbacks : GlobalEventListener
     {
         BoltNetwork.RegisterTokenClass<PhotonRoomProperties>();
         BoltNetwork.RegisterTokenClass<WeaponDropToken>();
+        BoltNetwork.RegisterTokenClass<PlayerToken>();
     }
 }

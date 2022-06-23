@@ -75,7 +75,7 @@ public class PlayerController : EntityBehaviour<IPhysicState>
         _drop = Input.GetKey(KeyCode.V);
 
         _ability1 = Input.GetKey(KeyCode.Q);
-        _ability2 = Input.GetKey(KeyCode.E);
+        _ability2 = Input.GetKey(KeyCode.G);
 
         _yaw += Input.GetAxisRaw("Mouse X") * _mouseSensitivity;
         _yaw %= 360f;
