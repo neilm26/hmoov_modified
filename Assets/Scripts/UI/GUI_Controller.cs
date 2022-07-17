@@ -40,6 +40,13 @@ public class GUI_Controller : MonoBehaviour
     private Image _blindMask = null;
     Coroutine blind;
 
+    [SerializeField]
+    private UI_PlayerPlate[] _allyPlates = null;
+    [SerializeField]
+    private UI_PlayerPlate[] _enemyPlates = null;
+    [SerializeField]
+    private Sprite[] _icons = null;
+
     private void Start()
     {
         Show(false);
@@ -98,6 +105,37 @@ public class GUI_Controller : MonoBehaviour
             }
         }
         _blindMask.color = new Color(1, 1, 1, 0);
+    }
+
+    public void UpdatePlayerPlates(GameObject[] players, GameObject localPlayer)
+    {
+        PlayerMotor pm;
+        PlayerToken pt;
+        if (localPlayer != null)
+        {
+            pm = localPlayer.GetComponent<PlayerMotor>();
+            pt = (PlayerToken)pm.entity.AttachToken;
+
+            _allyPlates[(int)pt.playerSquadID].Init(_icons[(int)pt.characterClass]);
+            _allyPlates[(int)pt.playerSquadID].Death(pm.state.IsDead);
+        }
+
+        foreach (GameObject p in players)
+        {
+            pm = p.GetComponent<PlayerMotor>();
+            pt = (PlayerToken)pm.entity.AttachToken;
+
+            if (pm.IsEnemy)
+            {
+                _enemyPlates[(int)pt.playerSquadID].Init(_icons[(int)pt.characterClass]);
+                _enemyPlates[(int)pt.playerSquadID].Death(pm.state.IsDead);
+            }
+            else
+            {
+                _allyPlates[(int)pt.playerSquadID].Init(_icons[(int)pt.characterClass]);
+                _allyPlates[(int)pt.playerSquadID].Death(pm.state.IsDead);
+            }
+        }
     }
 
 }

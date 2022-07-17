@@ -5,6 +5,7 @@ public class PlayerController : EntityBehaviour<IPhysicState>
 {
     private PlayerMotor _playerMotor;
     private PlayerWeapons _playerWeapons;
+    private PlayerRenderer _playerRenderer;
     private bool _forward;
     private bool _backward;
     private bool _left;
@@ -31,6 +32,7 @@ public class PlayerController : EntityBehaviour<IPhysicState>
     {
         _playerMotor = GetComponent<PlayerMotor>();
         _playerWeapons = GetComponent<PlayerWeapons>();
+        _playerRenderer = GetComponent<PlayerRenderer>();
     }
 
     public override void Attached()
@@ -43,6 +45,7 @@ public class PlayerController : EntityBehaviour<IPhysicState>
 
         Init(entity.HasControl);
         _playerMotor.Init(entity.HasControl);
+        _playerRenderer.Init();
         _playerWeapons.Init();
     }
 
@@ -50,7 +53,6 @@ public class PlayerController : EntityBehaviour<IPhysicState>
     {
         if (isMine)
         {
-            Cursor.lockState = CursorLockMode.Locked;
             FindObjectOfType<PlayerSetupController>().SceneCamera.gameObject.SetActive(false);
         }
     }

@@ -154,7 +154,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _map: snow_2
   _roomID: Test
-  _isServer: 1
+  _isServer: 0
 --- !u!4 &450334842
 Transform:
   m_ObjectHideFlags: 0

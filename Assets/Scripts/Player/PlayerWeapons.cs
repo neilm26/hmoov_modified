@@ -136,7 +136,7 @@ public class PlayerWeapons : Photon.Bolt.EntityBehaviour<IPlayerState>
             if (_dropPressed == false)
             {
                 _dropPressed = true;
-                DropWeapon();
+                DropWeapon(_weapons[_weaponIndex].WeaponStat.ID, false);
 
                 if (entity.IsOwner)
                     state.WeaponIndex = CalculateIndex(1);
@@ -152,33 +152,55 @@ public class PlayerWeapons : Photon.Bolt.EntityBehaviour<IPlayerState>
     }
 
 
-    public void DropWeapon()
+    public void DropWeapon(WeaponID toRemove, bool random)
     {
-        if (entity.IsOwner)
+        if (toRemove == WeaponID.None)
+            return;
+
+        if (toRemove == _primary)
         {
-            if (_weaponIndex != 0)
+            if (entity.IsOwner)
             {
                 WeaponDropToken token = new WeaponDropToken();
-                token.currentAmmo = _weapons[_weaponIndex].CurrentAmmo;
-                token.totalAmmo = _weapons[_weaponIndex].TotalAmmo;
-                token.ID = _weapons[_weaponIndex].WeaponStat.ID;
+                token.ID = toRemove;
+                token.currentAmmo = _weapons[2].CurrentAmmo;
+                token.totalAmmo = _weapons[2].TotalAmmo;
                 token.networkId = entity.NetworkId;
 
-                BoltNetwork.Instantiate(_weapons[_weaponIndex].WeaponStat.drop, token, Cam.transform.position + Cam.transform.forward, Quaternion.LookRotation(Cam.transform.forward));
-
-                if (_weapons[_weaponIndex].WeaponStat.ID < WeaponID.SecondaryEnd)
-                    _secondary = WeaponID.None;
+                if (random)
+                    BoltNetwork.Instantiate(_weapons[2].WeaponStat.drop, token, Cam.transform.position, Quaternion.identity);
                 else
-                    _primary = WeaponID.None;
+                    BoltNetwork.Instantiate(_weapons[2].WeaponStat.drop, token, Cam.transform.position + Cam.transform.forward, Quaternion.LookRotation(Cam.transform.forward));
 
-                state.Weapons[_weaponIndex].ID = -1;
-                Destroy(_weapons[_weaponIndex].gameObject);
-                _weapons[_weaponIndex] = null;
-                Debug.Log("DropWeapon in PlayerWeapons.cs has run (this should only run if _weaponIndex != 0");
+                state.Weapons[2].ID = -1;
             }
-            Debug.Log("DropWeapon in PlayerWeapons.cs has run (this should only run on server side");
+
+            Destroy(_weapons[2].gameObject);
+            _weapons[2] = null;
+            _primary = WeaponID.None;
         }
-        Debug.Log("DropWeapon in PlayerWeapons.cs has run");
+        else if (toRemove == _secondary)
+        {
+            if (entity.IsOwner)
+            {
+                WeaponDropToken token = new WeaponDropToken();
+                token.ID = toRemove;
+                token.currentAmmo = _weapons[1].CurrentAmmo;
+                token.totalAmmo = _weapons[1].TotalAmmo;
+                token.networkId = entity.NetworkId;
+
+                if (random)
+                    BoltNetwork.Instantiate(_weapons[1].WeaponStat.drop, token, Cam.transform.position, Quaternion.identity);
+                else
+                    BoltNetwork.Instantiate(_weapons[1].WeaponStat.drop, token, Cam.transform.position + Cam.transform.forward, Quaternion.LookRotation(Random.onUnitSphere));
+
+                state.Weapons[1].ID = -1;
+            }
+
+            Destroy(_weapons[1].gameObject);
+            _weapons[1] = null;
+            _secondary = WeaponID.None;
+        }
     }
 
     public void RemoveWeapon(int i)
@@ -187,6 +209,11 @@ public class PlayerWeapons : Photon.Bolt.EntityBehaviour<IPlayerState>
             Destroy(_weapons[i].gameObject);
 
         _weapons[i] = null;
+
+        if (i == 2)
+            _primary = WeaponID.None;
+        else if (i == 1)
+            _secondary = WeaponID.None;
         Debug.Log("ran RemoveWeapon in PlayerWeapons.cs");
     }
 
@@ -263,5 +290,63 @@ public class PlayerWeapons : Photon.Bolt.EntityBehaviour<IPlayerState>
         int i = (id < WeaponID.SecondaryEnd) ? 1 : 2;
         state.Weapons[i].ID = (int)id;
         Debug.Log("ran AddWeaponEvent(WeaponID id) in PlayerWeapons.cs");
+    }
+
+    public void RefillWeapon(WeaponID id)
+    {
+        Weapon prefab = null;
+
+        foreach (GameObject w in _weaponPrefabs)
+        {
+            if (w.GetComponent<Weapon>().WeaponStat.ID == id)
+            {
+                prefab = w.GetComponent<Weapon>();
+                break;
+            }
+        }
+
+        int i = 0;
+
+        if (id <= WeaponID.SecondaryEnd)
+        {
+            i = 1;
+        }
+        else
+        {
+            i = 2;
+        }
+
+        state.Weapons[i].CurrentAmmo = prefab.WeaponStat.magazin;
+        state.Weapons[i].TotalAmmo = prefab.WeaponStat.totalMagazin;
+    }
+
+    public void OnDeath(bool b)
+    {
+        if(b)
+        {
+            if(entity.IsControllerOrOwner)
+            {
+                DropWeapon(_primary, true);
+                DropWeapon(_secondary, true);
+            }
+
+            if (entity.IsOwner)
+            {
+                state.WeaponIndex = CalculateIndex(1);
+            }
+        }
+        else
+        {
+            if(entity.IsOwner)
+            {
+                if (state.Weapons[1].ID == -1)
+                    AddWeaponEvent(WeaponID.GPlinker);
+                else
+                    RefillWeapon((WeaponID)(state.Weapons[1].ID - 1));
+
+                if (state.Weapons[2].ID != -1)
+                    RefillWeapon((WeaponID)(state.Weapons[2].ID - 1));
+            }
+        }
     }
 }
