@@ -230,7 +230,6 @@ public class PlayerWeapons : Photon.Bolt.EntityBehaviour<IPlayerState>
                 return true;
         }
         return false;
-        Debug.Log("ran CanAddWeapon in PlayerWeapons.cs");
     }
     
     public void AddWeaponEvent(int i, int ca, int ta)
