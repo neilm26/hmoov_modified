@@ -30,6 +30,8 @@ public class GUI_Controller : MonoBehaviour
     [SerializeField]
     private UI_Cooldown _grenade = null;
 
+    public Team GuiTeam { set => _guiTeam = value; }
+
     [SerializeField]
     private Text _energyCount = null;
 
@@ -46,6 +48,15 @@ public class GUI_Controller : MonoBehaviour
     private UI_PlayerPlate[] _enemyPlates = null;
     [SerializeField]
     private Sprite[] _icons = null;
+
+    Team _guiTeam = Team.AT;
+    [SerializeField]
+    private Text _allyScore = null;
+    [SerializeField]
+    private Text _enemyScore = null;
+
+    [SerializeField]
+    private UI_Timer _timer = null;
 
     private void Start()
     {
@@ -136,6 +147,25 @@ public class GUI_Controller : MonoBehaviour
                 _allyPlates[(int)pt.playerSquadID].Death(pm.state.IsDead);
             }
         }
+    }
+
+    public void UpdatePoints(int AT, int TT)
+    {
+        if (_guiTeam == Team.AT)
+        {
+            _allyScore.text = AT.ToString();
+            _enemyScore.text = TT.ToString();
+        }
+        else
+        {
+            _allyScore.text = TT.ToString();
+            _enemyScore.text = AT.ToString();
+        }
+    }
+
+    public void UpdateTimer(float f)
+    {
+        _timer.Init(f);
     }
 
 }

@@ -49,6 +49,11 @@ public class PlayerController : EntityBehaviour<IPhysicState>
         _playerWeapons.Init();
     }
 
+    public override void ControlGained()
+    {
+        GUI_Controller.Current.Show(true);
+    }
+
     public void Init(bool isMine)
     {
         if (isMine)

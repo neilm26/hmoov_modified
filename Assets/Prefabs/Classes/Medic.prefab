@@ -893,8 +893,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  _primaryWeapon: 1
-  _secondaryWeapon: 5
+  _primaryWeapon: 2
+  _secondaryWeapon: -1
   _weaponsTransform: {fileID: 6944707285903194762}
   _weaponPrefabs:
   - {fileID: 3658268268345605129, guid: 4c3952d54a600844388b5b6634607a92, type: 3}

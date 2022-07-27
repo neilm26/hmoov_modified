@@ -329,10 +329,8 @@ public class PlayerWeapons : Photon.Bolt.EntityBehaviour<IPlayerState>
                 DropWeapon(_secondary, true);
             }
 
-            if (entity.IsOwner)
-            {
-                state.WeaponIndex = CalculateIndex(1);
-            }
+            _weaponIndex = 0;
+            SetWeapon(0);
         }
         else
         {

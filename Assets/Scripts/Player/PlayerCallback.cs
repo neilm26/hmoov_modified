@@ -34,6 +34,7 @@ public class PlayerCallback : EntityEventListener<IPlayerState>
             state.IsDead = false;
             state.LifePoints = _playerMotor.TotalLife;
             state.Energy = 6;
+            GameController.Current.UpdateGameState();
             GameController.Current.state.AlivePlayers++;
         }
     }
@@ -111,17 +112,62 @@ public class PlayerCallback : EntityEventListener<IPlayerState>
 
     private void UpdateDeathState()
     {
+        if (entity.IsOwner)
+        {
+            if (state.IsDead)
+                GameController.Current.state.AlivePlayers--;
+            else
+                GameController.Current.state.AlivePlayers++;
+        }
+
         if (entity.HasControl)
-            GUI_Controller.Current.Show(false);
+            GUI_Controller.Current.Show(!state.IsDead);
 
         _playerMotor.OnDeath(state.IsDead);
         _playerRenderer.OnDeath(state.IsDead);
         _playerWeapons.OnDeath(state.IsDead);
-
-        if (entity.IsOwner && state.IsDead)
-            StartCoroutine(Respawn());
     }
 
+    public void RoundReset(Team winner)
+    {
+        if (entity.IsOwner)
+        {
+            if (GameController.Current.CurrentPhase != GamePhase.Starting)
+            {
+                if (state.IsDead == true)
+                {
+                    state.IsDead = false;
+                    if (GameController.Current.CurrentPhase == GamePhase.WaitForPlayers)
+                    {
+                        state.Energy = 1;
+
+                        state.LifePoints = _playerMotor.TotalLife;
+                        state.SetTeleport(state.Transform);
+                        PlayerToken token = (PlayerToken)entity.AttachToken;
+                        transform.position = FindObjectOfType<PlayerSetupController>().GetSpawnPoint(token.team);
+                    }
+                }
+
+                if (GameController.Current.CurrentPhase == GamePhase.StartRound)
+                {
+                    if (state.Energy < 4)
+                        state.Energy += 1;
+
+                    PlayerToken token = (PlayerToken)entity.AttachToken;
+
+                    state.LifePoints = _playerMotor.TotalLife;
+                    state.SetTeleport(state.Transform);
+                    transform.position = FindObjectOfType<PlayerSetupController>().GetSpawnPoint(token.team);
+                }
+            }
+            else
+            {
+                state.Energy = 0;
+            }
+        }
+    }
+
+    /*
     IEnumerator Respawn()
     {
         yield return new WaitForSeconds(1f);
@@ -137,4 +183,5 @@ public class PlayerCallback : EntityEventListener<IPlayerState>
         yield return new WaitForSeconds(1f);
         GameController.Current.state.AlivePlayers++;
     }
+    */
 }

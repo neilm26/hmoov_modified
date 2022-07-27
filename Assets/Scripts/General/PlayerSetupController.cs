@@ -166,6 +166,7 @@ public class PlayerSetupController : GlobalEventListener
                 _teamSelector.SetActive(false);
                 _classSelector.SetActive(true);
                 _playerSquad = (PlayerSquadID)evnt.SquadID;
+                GUI_Controller.Current.GuiTeam = (Team)evnt.Team;
             }
 
             if (BoltNetwork.IsClient)

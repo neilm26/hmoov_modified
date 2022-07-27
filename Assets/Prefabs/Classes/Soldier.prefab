@@ -664,7 +664,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   _primaryWeapon: 2
-  _secondaryWeapon: 6
+  _secondaryWeapon: -1
   _weaponsTransform: {fileID: 6329895541415304867}
   _weaponPrefabs:
   - {fileID: 3658268268345605129, guid: 4c3952d54a600844388b5b6634607a92, type: 3}
