@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d51bd4adeed4a324ba21a602fc14c316, type: 3}
+  m_Name: M1000
+  m_EditorClassIdentifier: 
+  ID: 4
+  weaponName: 
+  reloadTime: 1
+  magazin: 30
+  totalMagazin: 120
+  ammoPerShot: 1
+  multiShot: 1
+  rpm: 800
+  dmg: 25
+  maxRange: 300
+  precision: 0.3
+  trail: {fileID: 9084460383817206584, guid: 43b8eb07410caf0458b01aeb4c4eeeb0, type: 3}
+  decal: {fileID: 6301483959452287413, guid: f42d47b400bb67346b9f0627a8940f4a, type: 3}
+  impact: {fileID: 114028477942468608, guid: 01826d6ad4ed4e441aa706e1caf2f032, type: 3}
+  drop: {fileID: 2849904570286678031, guid: b5eb8c1a5fdfb304dadcca5c7896fa6d, type: 3}
