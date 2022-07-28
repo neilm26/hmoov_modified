@@ -159,6 +159,20 @@ public class GameController : EntityEventListener<IGameModeState>
                     BoltNetwork.Destroy(drop.GetComponent<BoltEntity>());
                 }
 
+                bool founded = false;
+
+                while (!founded) {
+                    int r = Random.Range(0, players.Length);
+
+                    PlayerToken pt = (PlayerToken) players[r].GetComponent<PlayerMotor>().entity.AttachToken;
+
+                    if (pt.team == Team.TT) {
+                        players[r].GetComponent<PlayerWeapons>().AddWeaponEvent(WeaponID.Bomb);
+                        founded = true;
+                        Debug.Log("Got Bomb");
+                    }
+                }
+
                 foreach (GameObject player in players)
                 {
                     player.GetComponent<PlayerCallback>().RoundReset(_roundWinner);
@@ -172,6 +186,11 @@ public class GameController : EntityEventListener<IGameModeState>
             case GamePhase.TT_Planted:
                 break;
             case GamePhase.EndRound:
+                foreach (GameObject p in players) {
+                    if (p.GetComponent<PlayerWeapons>().HasBomb) {
+                        p.GetComponent<PlayerWeapons>().RemoveBomb();
+                    }
+                }
                 break;
             case GamePhase.EndGame:
                 //TODO declare winner

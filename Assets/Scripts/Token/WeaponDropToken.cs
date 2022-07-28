@@ -38,5 +38,6 @@ public enum WeaponID
     SecondaryEnd,
     M1000,
     AK1000,
-    MP1000
+    MP1000,
+    Bomb
 }

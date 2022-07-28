@@ -92,8 +92,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _sceneGuid: 
-  _serializerGuid: 
-  _prefabId: 20
+  _serializerGuid: 172f6b45-41c0-446b-b802-7d1a55d981f9
+  _prefabId: 22
   _updateRate: 1
   _autoFreezeProxyFrames: 0
   _clientPredicted: 1
@@ -152,6 +152,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 999423491930751948}
     - target: {fileID: 5879184804230780161, guid: fea1566d87ea59143812144b7c80b26a, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5879184804230780161, guid: fea1566d87ea59143812144b7c80b26a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1
       objectReference: {fileID: 0}
@@ -164,6 +168,10 @@ PrefabInstance:
       value: 1.289
       objectReference: {fileID: 0}
     - target: {fileID: 5879184804230780161, guid: fea1566d87ea59143812144b7c80b26a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5879184804230780161, guid: fea1566d87ea59143812144b7c80b26a, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0.000000021855694
       objectReference: {fileID: 0}
@@ -174,14 +182,6 @@ PrefabInstance:
     - target: {fileID: 5879184804230780161, guid: fea1566d87ea59143812144b7c80b26a, type: 3}
       propertyPath: m_LocalRotation.z
       value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5879184804230780161, guid: fea1566d87ea59143812144b7c80b26a, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5879184804230780161, guid: fea1566d87ea59143812144b7c80b26a, type: 3}
-      propertyPath: m_RootOrder
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5879184804230780161, guid: fea1566d87ea59143812144b7c80b26a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
