@@ -148,6 +148,10 @@ public class PlayerCallback : EntityEventListener<IPlayerState>
                     }
                 }
 
+                else {
+                    _playerWeapons.OnDeath(state.IsDead);
+                }
+
                 if (GameController.Current.CurrentPhase == GamePhase.StartRound)
                 {
                     if (state.Energy < 4)

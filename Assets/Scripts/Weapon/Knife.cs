@@ -13,7 +13,9 @@ public class Knife : Weapon
         if(_playerMotor)
         {
             _playerMotor.Speed = _playerMotor.SpeedBase * SPEED_MULTIPLIER;
-            GUI_Controller.Current.HideAmmo();
+            if (_playerMotor.entity.HasControl) {
+                GUI_Controller.Current.HideAmmo();
+            }
         }
     }
 

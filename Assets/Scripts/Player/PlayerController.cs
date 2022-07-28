@@ -17,7 +17,7 @@ public class PlayerController : EntityBehaviour<IPhysicState>
     private bool _fire;
     private bool _aiming;
     private bool _reload;
-    private int _wheel = 0;
+    private int _wheel = 1;
     private bool _drop;
     private bool _ability1;
     private bool _ability2;
