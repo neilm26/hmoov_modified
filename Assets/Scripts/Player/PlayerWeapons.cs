@@ -98,7 +98,7 @@ public class PlayerWeapons : Photon.Bolt.EntityBehaviour<IPlayerState>
         for (int i = 0; i < _weapons.Length; i++)
             if (_weapons[i] != null)
                 _weapons[i].gameObject.SetActive(false);
-
+        Debug.Log("index: " + _weaponIndex);
         _weapons[_weaponIndex].gameObject.SetActive(true);
         Debug.Log("ran SetWeapon in PlayerWeapons.cs");
     }
