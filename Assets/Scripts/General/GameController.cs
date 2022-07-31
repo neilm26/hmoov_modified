@@ -189,8 +189,10 @@ public class GameController : EntityEventListener<IGameModeState>
                     _nextEvent = BoltNetwork.ServerTime + 10f;
                     state.Timer = 10f;
                 }
+                Debug.Log("game phase wait for players");
                 break;
             case GamePhase.Starting:
+                Debug.Log("game phase starting");
                 break;
             case GamePhase.StartRound:
                 SetWalls(true);
@@ -223,11 +225,14 @@ public class GameController : EntityEventListener<IGameModeState>
                 }
                 _nextEvent = BoltNetwork.ServerTime + 10f;
                 state.Timer = 10f;
+                Debug.Log("game phase start round");
                 break;
             case GamePhase.AT_Defending:
                 SetWalls(false);
+                Debug.Log("game phase at defending");
                 break;
             case GamePhase.TT_Planted:
+                Debug.Log("game phase tt planted");
                 break;
             case GamePhase.EndRound:
                 state.Planted = false;
@@ -236,9 +241,11 @@ public class GameController : EntityEventListener<IGameModeState>
                         p.GetComponent<PlayerWeapons>().RemoveBomb();
                     }
                 }
+                Debug.Log("game phase endround");
                 break;
             case GamePhase.EndGame:
                 //TODO declare winner
+                Debug.Log("game phase endgame");
                 break;
             default:
                 break;
@@ -264,6 +271,7 @@ public class GameController : EntityEventListener<IGameModeState>
                     state.Timer = 15f;
                     _currentPhase = GamePhase.StartRound;
                     UpdateGameState();
+                    Debug.Log("game phase starting");
                 }
                 break;
             case GamePhase.StartRound:
@@ -273,6 +281,7 @@ public class GameController : EntityEventListener<IGameModeState>
                     state.Timer = 180f;
                     _currentPhase = GamePhase.AT_Defending;
                     UpdateGameState();
+                    Debug.Log("game phase start round");
                 }
                 break;
             case GamePhase.AT_Defending:
@@ -282,6 +291,7 @@ public class GameController : EntityEventListener<IGameModeState>
                     state.Timer = 180f;
                     _currentPhase = GamePhase.AT_Defending;
                     UpdateGameState();
+                    Debug.Log("game phase at defending");
                 }
                 break;
             case GamePhase.TT_Planted:
@@ -294,9 +304,11 @@ public class GameController : EntityEventListener<IGameModeState>
                     state.Timer = 15f;
                     _currentPhase = GamePhase.StartRound;
                     UpdateGameState();
+                    Debug.Log("game phase tt planted");
                 }
                 break;
             case GamePhase.EndGame:
+                Debug.Log("game phase end game");
                 break;
             default:
                 break;
