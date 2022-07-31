@@ -58,6 +58,11 @@ public class GUI_Controller : MonoBehaviour
     [SerializeField]
     private UI_Timer _timer = null;
 
+    [SerializeField]
+    private Image _bombBar = null;
+    [SerializeField]
+    private Image _bombPlanted = null;
+
     private void Start()
     {
         Show(false);
@@ -166,6 +171,21 @@ public class GUI_Controller : MonoBehaviour
     public void UpdateTimer(float f)
     {
         _timer.Init(f);
+    }
+
+    public void PlantingProgressShow(bool b)
+    {
+        _bombBar.transform.parent.gameObject.SetActive(b);
+    }
+
+    public void PlantingProgress(float b)
+    {
+        _bombBar.fillAmount = b;
+    }
+
+    public void Planted(bool b)
+    {
+        _bombPlanted.gameObject.SetActive(b);
     }
 
 }

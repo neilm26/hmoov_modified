@@ -41,6 +41,10 @@ public class PlayerMotor : EntityBehaviour<IPlayerState>
 
     public bool IsEnemy { get => _isEnemy; }
 
+    private bool _isPlanting = false;
+
+    public bool IsPlanting { set => _isPlanting = value; }
+
     private void Awake()
     {
         _networkRigidbody = GetComponent<NetworkRigidbody>();
@@ -89,30 +93,33 @@ public class PlayerMotor : EntityBehaviour<IPlayerState>
         if (!state.IsDead)
         {
             Vector3 movingDir = Vector3.zero;
-            if (forward ^ backward)
-            {
-                movingDir += forward ? transform.forward : -transform.forward;
-            }
-            if (left ^ right)
-            {
-                movingDir += right ? transform.right : -transform.right;
-            }
 
-            if (jump)
+            if (!_isPlanting)
             {
-                if (_jumpPressed == false && _isGrounded)
+                if (forward ^ backward)
                 {
-                    _isGrounded = false;
-                    _jumpPressed = true;
-                    _networkRigidbody.MoveVelocity += Vector3.up * _jumpForce;
+                    movingDir += forward ? transform.forward : -transform.forward;
+                }
+                if (left ^ right)
+                {
+                    movingDir += right ? transform.right : -transform.right;
+                }
+
+                if (jump)
+                {
+                    if (_jumpPressed == false && _isGrounded)
+                    {
+                        _isGrounded = false;
+                        _jumpPressed = true;
+                        _networkRigidbody.MoveVelocity += Vector3.up * _jumpForce;
+                    }
+                }
+                else
+                {
+                    if (_jumpPressed)
+                        _jumpPressed = false;
                 }
             }
-            else
-            {
-                if (_jumpPressed)
-                    _jumpPressed = false;
-            }
-
             movingDir.Normalize();
             movingDir *= _speed;
             _networkRigidbody.MoveVelocity = new Vector3(movingDir.x, _networkRigidbody.MoveVelocity.y, movingDir.z);

@@ -25,11 +25,18 @@ public class GameController : EntityEventListener<IGameModeState>
     Team _roundWinner = Team.None;
     int _winningRoundAmount = 10;
 
+    SiteController _ASite;
+    SiteController _BSite;
+
     public GamePhase CurrentPhase { get => _currentPhase; }
+
+    public bool IsInSite { get => _ASite.IsPlayerIn || _BSite.IsPlayerIn; }
 
     private void Start()
     {
         _walls = GameObject.Find("__Walls");
+        _ASite = GameObject.Find("__ASite").GetComponent<SiteController>();
+        _BSite = GameObject.Find("__BSite").GetComponent<SiteController>();
 
     }
 
@@ -39,6 +46,12 @@ public class GameController : EntityEventListener<IGameModeState>
         state.AddCallback("TTPoints", UpdatePoints);
         state.AddCallback("ATPoints", UpdatePoints);
         state.AddCallback("Timer", UpdateTime);
+        state.AddCallback("Planted", UpdatePlanted);    
+    }
+
+    public void UpdatePlanted()
+    {
+        GUI_Controller.Current.Planted(state.Planted);
     }
 
     public void UpdatePoints()
@@ -70,6 +83,15 @@ public class GameController : EntityEventListener<IGameModeState>
         {
             _walls.transform.GetChild(i).gameObject.SetActive(evnt.Set);
         }
+    }
+
+    public void Planted()
+    {
+        _nextEvent = BoltNetwork.ServerTime + 60;
+        state.Timer = 60;
+        _currentPhase = GamePhase.TT_Planted;
+        UpdateGameState();
+        state.Planted = true;
     }
 
     public void UpdatePlayersAlive()
@@ -104,6 +126,7 @@ public class GameController : EntityEventListener<IGameModeState>
                     state.Timer = 10f;
                     _currentPhase = GamePhase.EndRound;
                     _roundWinner = Team.TT;
+                    UpdateGameState();
                 }
 
                 if (TTCount == 0)
@@ -113,6 +136,7 @@ public class GameController : EntityEventListener<IGameModeState>
                     state.Timer = 10f;
                     _currentPhase = GamePhase.EndRound;
                     _roundWinner = Team.AT;
+                    UpdateGameState();
                 }
             }
 
@@ -126,7 +150,25 @@ public class GameController : EntityEventListener<IGameModeState>
 
             if (_currentPhase == GamePhase.TT_Planted)
             {
-                // TODO
+                if (ATCount == 0)
+                {
+                    state.TTPoints++;
+                    _nextEvent = BoltNetwork.ServerTime + 10f;
+                    state.Timer = 10f;
+                    _currentPhase = GamePhase.EndRound;
+                    _roundWinner = Team.TT;
+                    UpdateGameState();
+                }
+
+                if (TTCount == 0)
+                {
+                    state.ATPoints++;
+                    _nextEvent = BoltNetwork.ServerTime + 10f;
+                    state.Timer = 10f;
+                    _currentPhase = GamePhase.EndRound;
+                    _roundWinner = Team.AT;
+                    UpdateGameState();
+                }
             }
         }
 
@@ -152,6 +194,8 @@ public class GameController : EntityEventListener<IGameModeState>
                 break;
             case GamePhase.StartRound:
                 SetWalls(true);
+                _ASite.RoundReset();
+                _BSite.RoundReset(); 
                 GameObject[] drops = GameObject.FindGameObjectsWithTag("Drop");
 
                 foreach (GameObject drop in drops)
@@ -186,6 +230,7 @@ public class GameController : EntityEventListener<IGameModeState>
             case GamePhase.TT_Planted:
                 break;
             case GamePhase.EndRound:
+                state.Planted = false;
                 foreach (GameObject p in players) {
                     if (p.GetComponent<PlayerWeapons>().HasBomb) {
                         p.GetComponent<PlayerWeapons>().RemoveBomb();
