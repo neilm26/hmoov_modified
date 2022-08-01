@@ -94,6 +94,15 @@ public class GameController : EntityEventListener<IGameModeState>
         state.Planted = true;
     }
 
+    public void Diffuse() {
+        state.ATPoints++;
+        _nextEvent = BoltNetwork.ServerTime + 10f;
+        state.Timer = 10f;
+        _currentPhase = GamePhase.EndRound;
+        _roundWinner = Team.AT;
+        UpdateGameState();
+    }
+
     public void UpdatePlayersAlive()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
@@ -129,15 +138,6 @@ public class GameController : EntityEventListener<IGameModeState>
                     UpdateGameState();
                 }
 
-                if (TTCount == 0)
-                {
-                    state.ATPoints++;
-                    _nextEvent = BoltNetwork.ServerTime + 10f;
-                    state.Timer = 10f;
-                    _currentPhase = GamePhase.EndRound;
-                    _roundWinner = Team.AT;
-                    UpdateGameState();
-                }
             }
 
             if (GamePhase.WaitForPlayers == _currentPhase)
@@ -303,12 +303,14 @@ public class GameController : EntityEventListener<IGameModeState>
                     _nextEvent = BoltNetwork.ServerTime + 15f;
                     state.Timer = 15f;
                     _currentPhase = GamePhase.StartRound;
+                    BombController._IS_DIFFUSED = false;
                     UpdateGameState();
                     Debug.Log("game phase tt planted");
                 }
                 break;
             case GamePhase.EndGame:
                 Debug.Log("game phase end game");
+
                 break;
             default:
                 break;
