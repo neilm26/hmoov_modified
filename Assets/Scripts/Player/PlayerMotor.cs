@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using Photon.Bolt; 
 
 public class PlayerMotor : EntityBehaviour<IPlayerState>
@@ -45,6 +45,12 @@ public class PlayerMotor : EntityBehaviour<IPlayerState>
 
     public bool IsPlanting { set => _isPlanting = value; }
 
+    private bool _AT = false;
+    private bool _isDiffusing = false;
+
+    private float _diffusedTime = 0f;
+    private float _diffusingTime = 5f;
+
     private void Awake()
     {
         _networkRigidbody = GetComponent<NetworkRigidbody>();
@@ -68,6 +74,9 @@ public class PlayerMotor : EntityBehaviour<IPlayerState>
             }
         }
         TeamCheck();
+
+        PlayerToken lpt = (PlayerToken) entity.AttachToken;
+        _AT = lpt.team == Team.AT;
     }
 
     public void TeamCheck()
@@ -88,13 +97,13 @@ public class PlayerMotor : EntityBehaviour<IPlayerState>
             _isEnemy = true;
     }
 
-    public State ExecuteCommand(bool forward, bool backward, bool left, bool right, bool jump, float yaw, float pitch, bool ability1, bool ability2)
+    public State ExecuteCommand(bool forward, bool backward, bool left, bool right, bool jump, float yaw, float pitch, bool ability1, bool ability2, bool diffuse)
     {
         if (!state.IsDead)
         {
             Vector3 movingDir = Vector3.zero;
 
-            if (!_isPlanting)
+            if (!_isPlanting && !_isDiffusing)
             {
                 if (forward ^ backward)
                 {
@@ -134,6 +143,60 @@ public class PlayerMotor : EntityBehaviour<IPlayerState>
                 _skill.UpdateAbility(ability1); //confirmed to be running
             if (_grenade)
                 _grenade.UpdateAbility(ability2); //confirmed to be running
+
+            if (_AT) {
+                if (entity.IsOwner) {
+
+                    if (!_isDiffusing) {
+
+                        if (diffuse) {
+                            if (BombController.CheckDiffuse(transform.position)) {
+                                _isDiffusing = true;
+
+                                _diffusedTime = BoltNetwork.ServerTime + _diffusingTime;
+                                BombController.SetDiffuser(entity);
+                                GetComponent<PlayerCallback>().RaiseStartDiffuseEvent(_diffusedTime);
+                            }
+                        }
+                    }
+                    else {
+                        if (!diffuse || BombController._IS_DIFFUSED) {
+                            _isDiffusing = false;
+                            BombController.SetDiffuser(null);
+                        }
+                        else {
+
+                            if (_diffusedTime < BoltNetwork.ServerTime) {
+                                GameController.Current.Diffuse();
+                                BombController._IS_DIFFUSED = true;
+                                _isDiffusing = false;
+                                BombController.SetDiffuser(null);
+                                _diffusedTime = 0;
+                            }
+                        }
+                    }
+                }
+
+                else if (entity.HasControl) {
+                    if (_isDiffusing) {
+                        if (!diffuse) {
+                            _isDiffusing = false;
+                            if (entity.HasControl) {
+                                GUI_Controller.Current.PlantingProgressShow(false);
+                            }
+                        }
+                        else {
+                            GUI_Controller.Current.PlantingProgress(1 + ((BoltNetwork.ServerTime - _diffusedTime) / _diffusingTime));
+                            if (_diffusedTime < BoltNetwork.ServerTime) {
+                                _diffusedTime = 0;
+                                _isDiffusing = false;
+                                GUI_Controller.Current.PlantingProgressShow(false);
+                            }
+                        }
+                    }
+                }
+            }
+            
         }
 
         State stateMotor = new State();
@@ -238,6 +301,21 @@ public class PlayerMotor : EntityBehaviour<IPlayerState>
         _networkRigidbody.enabled = !b;
         _headCollider.enabled = !b;
         _capsuleCollider.enabled = !b;
+
+        if (entity.IsOwner) {
+            _isDiffusing = false;
+            BombController.SetDiffuser(null);
+        }
+        else if (entity.HasControl){
+            _isDiffusing = false;
+            GUI_Controller.Current.PlantingProgressShow(false);
+        }
+    }
+
+    public void Diffuse(float time) {
+        _isDiffusing = true;
+        GUI_Controller.Current.PlantingProgressShow(true);
+        _diffusedTime = time;
     }
 
     public struct State

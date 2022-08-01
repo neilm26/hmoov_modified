@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using Photon.Bolt;
 
 public class PlayerController : EntityBehaviour<IPhysicState>
@@ -21,6 +21,7 @@ public class PlayerController : EntityBehaviour<IPhysicState>
     private bool _drop;
     private bool _ability1;
     private bool _ability2;
+    private bool _diffuse;
 
     private bool _hasControl = false;
 
@@ -83,6 +84,7 @@ public class PlayerController : EntityBehaviour<IPhysicState>
 
         _ability1 = Input.GetKey(KeyCode.Q);
         _ability2 = Input.GetKey(KeyCode.G);
+        _diffuse = Input.GetKey(KeyCode.F);
 
         _yaw += Input.GetAxisRaw("Mouse X") * _mouseSensitivity;
         _yaw %= 360f;
@@ -114,11 +116,13 @@ public class PlayerController : EntityBehaviour<IPhysicState>
 
         input.Ability1 = _ability1;
         input.Ability2 = _ability2;
+        input.Diffuse = _diffuse;
+
 
 
         entity.QueueInput(input);
 
-        _playerMotor.ExecuteCommand(_forward, _backward, _left, _right, _jump, _yaw, _pitch, _ability1, _ability2);
+        _playerMotor.ExecuteCommand(_forward, _backward, _left, _right, _jump, _yaw, _pitch, _ability1, _ability2, _diffuse);
         _playerWeapons.ExecuteCommand(_fire, _aiming, _reload, _wheel, BoltNetwork.ServerFrame % 1024, _drop);
     }
 
@@ -146,7 +150,8 @@ public class PlayerController : EntityBehaviour<IPhysicState>
                 cmd.Input.Yaw,
                 cmd.Input.Pitch,
                 cmd.Input.Ability1,
-                cmd.Input.Ability2);
+                cmd.Input.Ability2,
+                cmd.Input.Diffuse);
 
                 _playerWeapons.ExecuteCommand(
                 cmd.Input.Fire,

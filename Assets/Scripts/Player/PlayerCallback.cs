@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using Photon.Bolt;
 using System.Collections;
 
@@ -109,7 +109,6 @@ public class PlayerCallback : EntityEventListener<IPlayerState>
     {
         GUI_Controller.Current.Flash();
     }
-
     private void UpdateDeathState()
     {
         if (entity.IsOwner)
@@ -188,4 +187,15 @@ public class PlayerCallback : EntityEventListener<IPlayerState>
         GameController.Current.state.AlivePlayers++;
     }
     */
+
+    public void RaiseStartDiffuseEvent(float time) {
+        StartDiffuseEvent evnt = StartDiffuseEvent.Create(entity, EntityTargets.OnlyController);
+        evnt.Time = time;
+        evnt.Send();
+    }
+
+    public override void OnEvent(StartDiffuseEvent evnt)
+    {
+        _playerMotor.Diffuse(evnt.Time);
+    }
 }
