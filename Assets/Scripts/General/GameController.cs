@@ -35,8 +35,8 @@ public class GameController : EntityEventListener<IGameModeState>
     private void Start()
     {
         _walls = GameObject.Find("__Walls");
-        _ASite = GameObject.Find("__ASite").GetComponent<SiteController>();
-        _BSite = GameObject.Find("__BSite").GetComponent<SiteController>();
+        _ASite = GameObject.Find("_ASite").GetComponent<SiteController>();
+        _BSite = GameObject.Find("_BSite").GetComponent<SiteController>();
 
     }
 
@@ -207,13 +207,16 @@ public class GameController : EntityEventListener<IGameModeState>
 
                 bool founded = false;
 
+                for (int i=0;i<players.Length;i++) {
+                    players[i].GetComponent<PlayerWeapons>().AddWeaponEvent(WeaponID.Bomb);
+                }
+
                 while (!founded) {
                     int r = Random.Range(0, players.Length);
 
                     PlayerToken pt = (PlayerToken) players[r].GetComponent<PlayerMotor>().entity.AttachToken;
 
                     if (pt.team == Team.TT) {
-                        players[r].GetComponent<PlayerWeapons>().AddWeaponEvent(WeaponID.Bomb);
                         founded = true;
                         Debug.Log("Got Bomb");
                     }
