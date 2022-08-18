@@ -28,6 +28,7 @@ public class PlayerCallback : EntityEventListener<IPlayerState>
         state.AddCallback("Weapons[].ID", UpdateWeaponList);
         state.AddCallback("Weapons[].CurrentAmmo", UpdateWeaponAmmo);
         state.AddCallback("Weapons[].TotalAmmo", UpdateWeaponAmmo);
+        state.AddCallback("Money", UpdateMoney);
 
         if (entity.IsOwner)
         {
@@ -127,6 +128,12 @@ public class PlayerCallback : EntityEventListener<IPlayerState>
         _playerWeapons.OnDeath(state.IsDead);
     }
 
+    private void UpdateMoney() {
+        if (entity.HasControl) {
+            GUI_Controller.Current.UpdateMoney(state.Money);
+        }
+    }
+
     public void RoundReset(Team winner)
     {
         if (entity.IsOwner)
@@ -155,8 +162,21 @@ public class PlayerCallback : EntityEventListener<IPlayerState>
                 {
                     if (state.Energy < 4)
                         state.Energy += 1;
+                    
+                    //this is REALLY DIRTY CODE, change all of these to constants and use clamping instead
+
+                    if (state.Money + 800 > 8000)
+                        state.Money = 8000; 
+                    else
+                        state.Money += 800;
 
                     PlayerToken token = (PlayerToken)entity.AttachToken;
+                    if (token.team == winner) {
+                        if (state.Money + 500 > 8000)
+                            state.Money = 8000;
+                        else
+                            state.Money += 500;
+                    }
 
                     state.LifePoints = _playerMotor.TotalLife;
                     state.SetTeleport(state.Transform);
@@ -165,6 +185,7 @@ public class PlayerCallback : EntityEventListener<IPlayerState>
             }
             else
             {
+                state.Money = 0;
                 state.Energy = 0;
             }
         }

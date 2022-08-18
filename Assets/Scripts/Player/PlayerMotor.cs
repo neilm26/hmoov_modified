@@ -284,6 +284,12 @@ public class PlayerMotor : EntityBehaviour<IPlayerState>
             {
                 state.LifePoints = 0;
                 state.IsDead = true;
+
+                if (killer.state.Money + 600 > 8000)
+                    killer.state.Money = 8000; 
+                else
+                    killer.state.Money += 600;
+
             }
             else if (value > _totalLife)
             {

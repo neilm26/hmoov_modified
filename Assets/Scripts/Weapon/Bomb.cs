@@ -35,6 +35,7 @@ public class Bomb : Weapon
         _plantedTime = 0;
         _playerMotor.IsPlanting = false;
         GUI_Controller.Current.PlantingProgressShow(false);
+        GUI_Controller.Current.Show(true);
     }
 
     protected override void _Fire(int seed) 

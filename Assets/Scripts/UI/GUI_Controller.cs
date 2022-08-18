@@ -63,6 +63,9 @@ public class GUI_Controller : MonoBehaviour
     [SerializeField]
     private Image _bombPlanted = null;
 
+    [SerializeField]
+    private Text _money = null;
+
     private void Start()
     {
         Show(false);
@@ -74,6 +77,7 @@ public class GUI_Controller : MonoBehaviour
         _ammoPanel.gameObject.SetActive(active);
         _skill.gameObject.SetActive(active);
         _grenade.gameObject.SetActive(active);
+        _money.gameObject.SetActive(active);
         _energyCount.transform.parent.gameObject.SetActive(active);
     }
 
@@ -186,6 +190,10 @@ public class GUI_Controller : MonoBehaviour
     public void Planted(bool b)
     {
         _bombPlanted.gameObject.SetActive(b);
+    }
+
+    public void UpdateMoney(int money) {
+        _money.text = "$ " + money;
     }
 
 }
