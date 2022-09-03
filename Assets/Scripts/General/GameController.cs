@@ -35,8 +35,8 @@ public class GameController : EntityEventListener<IGameModeState>
     private void Start()
     {
         _walls = GameObject.Find("__Walls");
-        _ASite = GameObject.Find("_ASite").GetComponent<SiteController>();
-        _BSite = GameObject.Find("_BSite").GetComponent<SiteController>();
+        _ASite = GameObject.Find("__ASite").GetComponent<SiteController>();
+        _BSite = GameObject.Find("__BSite").GetComponent<SiteController>();
 
     }
 
@@ -92,9 +92,10 @@ public class GameController : EntityEventListener<IGameModeState>
         _currentPhase = GamePhase.TT_Planted;
         UpdateGameState();
         state.Planted = true;
+        Debug.Log("state.Planted = true; Planted() has ran");
     }
 
-    public void Diffuse() {
+    public void Defuse() {
         state.ATPoints++;
         _nextEvent = BoltNetwork.ServerTime + 10f;
         state.Timer = 10f;
@@ -207,9 +208,11 @@ public class GameController : EntityEventListener<IGameModeState>
 
                 bool founded = false;
 
+                /*
                 for (int i=0;i<players.Length;i++) {
                     players[i].GetComponent<PlayerWeapons>().AddWeaponEvent(WeaponID.Bomb);
                 }
+                */
 
                 while (!founded) {
                     int r = Random.Range(0, players.Length);
@@ -217,6 +220,7 @@ public class GameController : EntityEventListener<IGameModeState>
                     PlayerToken pt = (PlayerToken) players[r].GetComponent<PlayerMotor>().entity.AttachToken;
 
                     if (pt.team == Team.TT) {
+                        players[r].GetComponent<PlayerWeapons>().AddWeaponEvent(WeaponID.Bomb);
                         founded = true;
                         Debug.Log("Got Bomb");
                     }
@@ -306,7 +310,7 @@ public class GameController : EntityEventListener<IGameModeState>
                     _nextEvent = BoltNetwork.ServerTime + 15f;
                     state.Timer = 15f;
                     _currentPhase = GamePhase.StartRound;
-                    BombController._IS_DIFFUSED = false;
+                    BombController._IS_DEFUSED = false;
                     UpdateGameState();
                     Debug.Log("game phase tt planted");
                 }

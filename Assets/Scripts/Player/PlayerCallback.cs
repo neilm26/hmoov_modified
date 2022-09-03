@@ -188,14 +188,14 @@ public class PlayerCallback : EntityEventListener<IPlayerState>
     }
     */
 
-    public void RaiseStartDiffuseEvent(float time) {
-        StartDiffuseEvent evnt = StartDiffuseEvent.Create(entity, EntityTargets.OnlyController);
+    public void RaiseStartDefuseEvent(float time) {
+        StartDefuseEvent evnt = StartDefuseEvent.Create(entity, EntityTargets.OnlyController);
         evnt.Time = time;
         evnt.Send();
     }
 
-    public override void OnEvent(StartDiffuseEvent evnt)
+    public override void OnEvent(StartDefuseEvent evnt)
     {
-        _playerMotor.Diffuse(evnt.Time);
+        _playerMotor.Defuse(evnt.Time);
     }
 }

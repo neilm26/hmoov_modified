@@ -46,10 +46,10 @@ public class PlayerMotor : EntityBehaviour<IPlayerState>
     public bool IsPlanting { set => _isPlanting = value; }
 
     private bool _AT = false;
-    private bool _isDiffusing = false;
+    private bool _isDefusing = false;
 
-    private float _diffusedTime = 0f;
-    private float _diffusingTime = 5f;
+    private float _defusedTime = 0f;
+    private float _defusingTime = 5f;
 
     private void Awake()
     {
@@ -97,13 +97,13 @@ public class PlayerMotor : EntityBehaviour<IPlayerState>
             _isEnemy = true;
     }
 
-    public State ExecuteCommand(bool forward, bool backward, bool left, bool right, bool jump, float yaw, float pitch, bool ability1, bool ability2, bool diffuse)
+    public State ExecuteCommand(bool forward, bool backward, bool left, bool right, bool jump, float yaw, float pitch, bool ability1, bool ability2, bool defuse)
     {
         if (!state.IsDead)
         {
             Vector3 movingDir = Vector3.zero;
 
-            if (!_isPlanting && !_isDiffusing)
+            if (!_isPlanting && !_isDefusing)
             {
                 if (forward ^ backward)
                 {
@@ -147,49 +147,49 @@ public class PlayerMotor : EntityBehaviour<IPlayerState>
             if (_AT) {
                 if (entity.IsOwner) {
 
-                    if (!_isDiffusing) {
+                    if (!_isDefusing) {
 
-                        if (diffuse) {
-                            if (BombController.CheckDiffuse(transform.position)) {
-                                _isDiffusing = true;
+                        if (defuse) {
+                            if (BombController.CheckDefuse(transform.position)) {
+                                _isDefusing = true;
 
-                                _diffusedTime = BoltNetwork.ServerTime + _diffusingTime;
-                                BombController.SetDiffuser(entity);
-                                GetComponent<PlayerCallback>().RaiseStartDiffuseEvent(_diffusedTime);
+                                _defusedTime = BoltNetwork.ServerTime + _defusingTime;
+                                BombController.SetDefuser(entity);
+                                GetComponent<PlayerCallback>().RaiseStartDefuseEvent(_defusedTime);
                             }
                         }
                     }
                     else {
-                        if (!diffuse || BombController._IS_DIFFUSED) {
-                            _isDiffusing = false;
-                            BombController.SetDiffuser(null);
+                        if (!defuse || BombController._IS_DEFUSED) {
+                            _isDefusing = false;
+                            BombController.SetDefuser(null);
                         }
                         else {
 
-                            if (_diffusedTime < BoltNetwork.ServerTime) {
-                                GameController.Current.Diffuse();
-                                BombController._IS_DIFFUSED = true;
-                                _isDiffusing = false;
-                                BombController.SetDiffuser(null);
-                                _diffusedTime = 0;
+                            if (_defusedTime < BoltNetwork.ServerTime) {
+                                GameController.Current.Defuse();
+                                BombController._IS_DEFUSED = true;
+                                _isDefusing = false;
+                                BombController.SetDefuser(null);
+                                _defusedTime = 0;
                             }
                         }
                     }
                 }
 
                 else if (entity.HasControl) {
-                    if (_isDiffusing) {
-                        if (!diffuse) {
-                            _isDiffusing = false;
+                    if (_isDefusing) {
+                        if (!defuse) {
+                            _isDefusing = false;
                             if (entity.HasControl) {
                                 GUI_Controller.Current.PlantingProgressShow(false);
                             }
                         }
                         else {
-                            GUI_Controller.Current.PlantingProgress(1 + ((BoltNetwork.ServerTime - _diffusedTime) / _diffusingTime));
-                            if (_diffusedTime < BoltNetwork.ServerTime) {
-                                _diffusedTime = 0;
-                                _isDiffusing = false;
+                            GUI_Controller.Current.PlantingProgress(1 + ((BoltNetwork.ServerTime - _defusedTime) / _defusingTime));
+                            if (_defusedTime < BoltNetwork.ServerTime) {
+                                _defusedTime = 0;
+                                _isDefusing = false;
                                 GUI_Controller.Current.PlantingProgressShow(false);
                             }
                         }
@@ -303,19 +303,19 @@ public class PlayerMotor : EntityBehaviour<IPlayerState>
         _capsuleCollider.enabled = !b;
 
         if (entity.IsOwner) {
-            _isDiffusing = false;
-            BombController.SetDiffuser(null);
+            _isDefusing = false;
+            BombController.SetDefuser(null);
         }
         else if (entity.HasControl){
-            _isDiffusing = false;
+            _isDefusing = false;
             GUI_Controller.Current.PlantingProgressShow(false);
         }
     }
 
-    public void Diffuse(float time) {
-        _isDiffusing = true;
+    public void Defuse(float time) {
+        _isDefusing = true;
         GUI_Controller.Current.PlantingProgressShow(true);
-        _diffusedTime = time;
+        _defusedTime = time;
     }
 
     public struct State

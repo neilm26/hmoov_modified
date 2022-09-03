@@ -44,16 +44,20 @@ public class Bomb : Weapon
 
     public override void ExecuteCommand(bool fire, bool aiming, bool reload, int seed)
     {
-        if (_gameController.IsInSite)
+        //Debug.Log("Bomb.cs ExecuteCommand bool fire has run"); confirmed to be running
+        if (_gameController.IsInSite) // THIS IF STATEMENT IS NOT RUNNING!!!!
         {
+            Debug.Log("_gameController is in site"); // THIS DEBUG STATEMENT IS NOT RUNNING!!!
             if (fire)
             {
+                Debug.Log("fire is true");
                 if (_pressed == false)
                 {
                     _playerMotor.IsPlanting = true;
                     _pressed = true;
                     _plantedTime = BoltNetwork.ServerTime + _plantingTime;
                     GUI_Controller.Current.PlantingProgressShow(true);
+                    Debug.Log("Registered bomb button press, UI should show planting progress");
                 } 
 
                 if (_plantingTime < BoltNetwork.ServerTime && _plantedTime != 0)
