@@ -5,7 +5,7 @@ public class BombController : EntityBehaviour<IBombState>
 {
 
     static BombController instance = null;
-    private static float _MAX_DISTANCE = 3f;
+    private static float _MAX_DISTANCE = 2f;
     private BoltEntity _defuser = null;
     public static bool _IS_DEFUSED = false;
 

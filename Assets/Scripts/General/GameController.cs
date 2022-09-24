@@ -38,6 +38,9 @@ public class GameController : EntityEventListener<IGameModeState>
         _ASite = GameObject.Find("__ASite").GetComponent<SiteController>();
         _BSite = GameObject.Find("__BSite").GetComponent<SiteController>();
 
+        Debug.Log(_ASite);
+        Debug.Log(_BSite);
+
     }
 
     public override void Attached()

@@ -9,11 +9,12 @@ public class SiteController : MonoBehaviour
 
     public bool IsPlayerIn { get => _isPlayerIn; }
 
-    void onTriggerEnter(Collider col)
+    //bitch ass name
+    void OnTriggerEnter(Collider col)
     {
         if (col.GetComponent<PlayerWeapons>())
         {
-            if (!_playersIn.Contains(col.GetComponent<PlayerWeapons>()) && (col.gameObject.tag == "Player" || col.gameObject.tag == "LocalPlayer"))
+            if (!_playersIn.Contains(col.GetComponent<PlayerWeapons>()) && (col.gameObject.CompareTag("Player") || col.gameObject.CompareTag("LocalPlayer")))
             {
                 _playersIn.Add(col.GetComponent<PlayerWeapons>());
             }
@@ -33,12 +34,18 @@ public class SiteController : MonoBehaviour
 
     void FixedUpdate()
     {
+        //Debug.Log("FixedUpdate() in SiteController.cs is running"); //confirmed to be running
         _isPlayerIn = false;
-
-        foreach (PlayerWeapons pw in _playersIn)
+        Debug.Log(_playersIn);
+        foreach (PlayerWeapons pw in _playersIn) // this is not running??
         {
             if (pw.HasBomb)
+            {
                 _isPlayerIn = true;
+                Debug.Log(pw);
+                Debug.Log("_isPlayerIn = true");
+            }
+            Debug.Log("_isPlayerIn = false");
         }
     }
 

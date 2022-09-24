@@ -17,6 +17,7 @@ public class Bomb : Weapon
                 
         if (_gameController == null) {
             _gameController = FindObjectOfType<GameController>();
+            Debug.Log("GameController found");
         }
     }
     private void OnEnable()
