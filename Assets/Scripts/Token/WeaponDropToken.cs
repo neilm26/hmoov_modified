@@ -39,5 +39,10 @@ public enum WeaponID
     M1000,
     AK1000,
     MP1000,
+<<<<<<< Updated upstream
+=======
+    RPG,
+    Sniper,
+>>>>>>> Stashed changes
     Bomb
 }

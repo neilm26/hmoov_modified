@@ -81,7 +81,7 @@ public class PlayerCallback : EntityEventListener<IPlayerState>
         evnt.Send();
     }
 
-    public void OnEvent(FireEffectEvent evnt)
+    public override void OnEvent(FireEffectEvent evnt)
     {
         _playerWeapons.FireEffect(evnt.Seed, evnt.Precision);
     }
@@ -97,6 +97,7 @@ public class PlayerCallback : EntityEventListener<IPlayerState>
         if (entity.HasControl)
         {
             GUI_Controller.Current.UpdateAbilityView(state.Energy);
+            GUI_Controller.Current.UpdateShop(state.Energy, state.Money);
         }
     }
 
@@ -130,6 +131,7 @@ public class PlayerCallback : EntityEventListener<IPlayerState>
 
     private void UpdateMoney() {
         if (entity.HasControl) {
+            GUI_Controller.Current.UpdateShop(state.Energy, state.Money);
             GUI_Controller.Current.UpdateMoney(state.Money);
         }
     }
@@ -185,7 +187,7 @@ public class PlayerCallback : EntityEventListener<IPlayerState>
             }
             else
             {
-                state.Money = 0;
+                state.Money = 6000;
                 state.Energy = 0;
             }
         }
@@ -218,5 +220,31 @@ public class PlayerCallback : EntityEventListener<IPlayerState>
     public override void OnEvent(StartDefuseEvent evnt)
     {
         _playerMotor.Defuse(evnt.Time);
+    }
+
+    public void RaiseBuyWeaponEvent(int index)
+    {
+        BuyWeaponEvent evnt = BuyWeaponEvent.Create(entity, EntityTargets.OnlyOwner);
+        evnt.index = index;
+        evnt.Send();
+    }
+
+    public override void OnEvent(BuyWeaponEvent evnt)
+    {
+        state.Money -= GUI_Controller.Current.shop.ItemCost(evnt.index);
+        GetComponent<PlayerWeapons>().AddWeaponEvent(GUI_Controller.Current.shop.ItemID(evnt.index));
+    }
+
+    public void RaiseBuyEnergyEvent()
+    {
+        BuyEnergyEvent evnt = BuyEnergyEvent.Create(entity, EntityTargets.OnlyOwner);
+        evnt.Send();
+    }
+
+    public override void OnEvent(BuyEnergyEvent evnt)
+    {
+        //kinda funny how its referencing the cost from the GUI_Controller but i'll keep my damn mouth shut
+        state.Money -= GUI_Controller.Current.shop.EnergyCost();
+        state.Energy++;
     }
 }

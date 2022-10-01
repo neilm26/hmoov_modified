@@ -66,6 +66,13 @@ public class GUI_Controller : MonoBehaviour
     [SerializeField]
     private Text _money = null;
 
+    [SerializeField]
+    private GameObject _scope = null;
+
+    [SerializeField]
+    private UI_Shop _shop = null;
+
+    public UI_Shop shop { get => _shop; }
     private void Start()
     {
         Show(false);
@@ -79,6 +86,19 @@ public class GUI_Controller : MonoBehaviour
         _grenade.gameObject.SetActive(active);
         _money.gameObject.SetActive(active);
         _energyCount.transform.parent.gameObject.SetActive(active);
+
+        if (_bombBar.transform.parent.gameObject.activeSelf)
+            _bombBar.transform.parent.gameObject.SetActive(active);
+
+        if (_bombPlanted.gameObject.activeSelf)
+            _bombPlanted.gameObject.SetActive(active);
+
+        if (_scope.gameObject.activeSelf)
+            _scope.gameObject.SetActive(active);
+        //this might need some changing and or modifying/upgrading, closes the shop when you die
+        //best to go with a system where you are given a new shop screen and or 3rd person spectator view with shop screen while waiting to respawn 
+        if (_shop.gameObject.activeSelf)
+            _shop.gameObject.SetActive(active);
     }
 
     public void UpdateLife(int current, int total)
@@ -194,6 +214,21 @@ public class GUI_Controller : MonoBehaviour
 
     public void UpdateMoney(int money) {
         _money.text = "$ " + money;
+    }
+
+    public void ShowScope(bool show)
+    {
+        _scope.SetActive(show);
+    }
+
+    public void ShowShop(bool show)
+    {
+        _shop.gameObject.SetActive(show);
+    }
+
+    public void UpdateShop(int e, int m)
+    {
+        _shop.UpdateView(e, m);
     }
 
 }

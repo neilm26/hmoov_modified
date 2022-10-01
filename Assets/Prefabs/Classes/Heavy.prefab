@@ -189,8 +189,13 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+<<<<<<< Updated upstream
   _primaryWeapon: 2
   _secondaryWeapon: -1
+=======
+  _primaryWeapon: 7
+  _secondaryWeapon: 2
+>>>>>>> Stashed changes
   _weaponsTransform: {fileID: 1832409241477862367}
   _weaponPrefabs:
   - {fileID: 3658268268345605129, guid: 4c3952d54a600844388b5b6634607a92, type: 3}
@@ -198,6 +203,12 @@ MonoBehaviour:
   - {fileID: 3655611998962432170, guid: f067350c04a113c4292fdc5845ae9aa6, type: 3}
   - {fileID: 6588423056509370247, guid: 14c3f64de11a30041a6a019ec355a116, type: 3}
   - {fileID: 7705929395339967362, guid: 6a9967a11f93e794a9fff76ad99f615e, type: 3}
+<<<<<<< Updated upstream
+=======
+  - {fileID: 5426786590928814719, guid: d991f1ddbcab72542aa74d9598e40368, type: 3}
+  - {fileID: 503907017363519844, guid: c8301776ef97e8e41922a9b852012b88, type: 3}
+  - {fileID: 4197116764696019029, guid: 45b5bfcf9b3076c4c9320ac6bbd7008a, type: 3}
+>>>>>>> Stashed changes
 --- !u!114 &84180781748290119
 MonoBehaviour:
   m_ObjectHideFlags: 0

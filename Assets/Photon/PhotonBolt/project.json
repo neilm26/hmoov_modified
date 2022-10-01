@@ -1290,6 +1290,39 @@
       "Name": "StartDefuseEvent",
       "Guid": "09e04412-0661-4293-a6ef-f165193a6f7c",
       "Groups": []
+    },
+    {
+      "$type": "Photon.Bolt.Compiler.EventDefinition, bolt.compiler",
+      "Properties": [],
+      "EntitySenders": 2,
+      "GlobalSenders": 3,
+      "Name": "BuyEnergyEvent",
+      "Guid": "bb234ed0-e005-4899-966d-a56c98c8822a",
+      "Groups": []
+    },
+    {
+      "$type": "Photon.Bolt.Compiler.EventDefinition, bolt.compiler",
+      "Properties": [
+        {
+          "Name": "index",
+          "Enabled": true,
+          "Expanded": true,
+          "ReplicationMode": 1,
+          "Priority": 1,
+          "PropertyType": {
+            "$type": "Photon.Bolt.Compiler.PropertyTypeInteger, bolt.compiler",
+            "MaxValue": 255
+          },
+          "AssetSettings": {
+            "$type": "Photon.Bolt.Compiler.PropertyEventSettings, bolt.compiler"
+          }
+        }
+      ],
+      "EntitySenders": 2,
+      "GlobalSenders": 3,
+      "Name": "BuyWeaponEvent",
+      "Guid": "bc995dc3-d0e0-4c36-ba75-e95428465371",
+      "Groups": []
     }
   ],
   "ActiveGroup": "Everything"

@@ -14,6 +14,7 @@ public class Weapon : MonoBehaviour
     protected PlayerWeapons _playerWeapons;
     protected PlayerMotor _playerMotor;
     protected PlayerCallback _playerCallback;
+    protected PlayerController _playerController;
 
     protected int _fireFrame = 0;
     private Coroutine _reloadCrt = null;
@@ -22,6 +23,12 @@ public class Weapon : MonoBehaviour
     private GameObject _renderer;
     [SerializeField]
     private Transform _muzzle;
+
+    protected float _basePrecision = 0;
+    protected float _precision = 0;
+    private bool _scoping = false;
+    private float _baseSensitivity;
+    private float _scopeSensitivity;
 
     protected int _fireInterval
     {
@@ -62,7 +69,13 @@ public class Weapon : MonoBehaviour
         _playerWeapons = pw;
         _playerMotor = pw.GetComponent<PlayerMotor>();
         _playerCallback = pw.GetComponent<PlayerCallback>();
+        _playerController = pw.GetComponent<PlayerController>();
         _camera = _playerWeapons.Cam.transform;
+
+        _baseSensitivity = _playerController.mouseSensitivity;
+        _scopeSensitivity = _baseSensitivity * _weaponStat.scopeSensitivity;
+
+        _precision = WeaponStat.precision;
 
         if(_playerMotor.state.Weapons[index].CurrentAmmo != -1)
         {
@@ -125,6 +138,16 @@ public class Weapon : MonoBehaviour
                 {
                     _Fire(seed);
                 }
+
+                if (_weaponStat.canScope)
+                {
+                    if (_scoping != aiming)
+                    {
+                        _precision = _weaponStat.precision * (aiming ? _weaponStat.scopePrecision : 1f);
+                        _scoping = aiming;
+                        _Aiming(_scoping);
+                    }
+                }
             }
         }
     }
@@ -140,9 +163,9 @@ public class Weapon : MonoBehaviour
                 _fireFrame = BoltNetwork.ServerFrame;
 
                 if (_playerCallback.entity.IsOwner)
-                    _playerCallback.FireEffect(WeaponStat.precision, seed);
+                    _playerCallback.FireEffect(_precision, seed);
                 if (_playerCallback.entity.HasControl)
-                    FireEffect(seed, WeaponStat.precision);
+                    FireEffect(seed, _precision);
 
                 CurrentAmmo -= _weaponStat.ammoPerShot;
                 Random.InitState(seed);
@@ -151,7 +174,7 @@ public class Weapon : MonoBehaviour
                 for (int i = 0; i < _weaponStat.multiShot; i++)
                 {
 
-                    Vector2 rnd = Random.insideUnitSphere * _weaponStat.precision;
+                    Vector2 rnd = Random.insideUnitSphere * _precision;
                     Ray r = new Ray(_camera.position, (_camera.forward * 10f) + (_camera.up * rnd.y) + (_camera.right * rnd.x));
                     RaycastHit rh;
                     //Debug.Log("bulet has been shot");
@@ -193,6 +216,27 @@ public class Weapon : MonoBehaviour
         else if (TotalAmmo > 0)
         {
             _Reload();
+        }
+    }
+
+    private void _Aiming(bool aim)
+    {
+        if (_playerWeapons.entity.HasControl)
+        {
+            GUI_Controller.Current.ShowScope(aim);
+            _renderer.SetActive(!aim);
+            //fucking garbage hardcoded FOV, they will change with scope type and shit
+            //fix when rehauling weapon system/UI that can adjust settings
+            if (aim)
+            {
+                _camera.GetComponent<Camera>().fieldOfView = 40;
+                _playerController.mouseSensitivity = _scopeSensitivity;
+            }
+            else
+            {
+                _camera.GetComponent<Camera>().fieldOfView = 75;
+                _playerController.mouseSensitivity = _baseSensitivity;
+            }
         }
     }
 

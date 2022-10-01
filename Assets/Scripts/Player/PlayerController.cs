@@ -24,8 +24,15 @@ public class PlayerController : EntityBehaviour<IPhysicState>
     private bool _diffuse;
 
     private bool _hasControl = false;
+    private bool _isInMenu = false;
 
     private float _mouseSensitivity = 5f;
+
+    public float mouseSensitivity
+    {
+        get => _mouseSensitivity;
+        set => _mouseSensitivity = value;
+    }
 
     public int Wheel { get => _wheel; set => _wheel = value; }
 
@@ -41,7 +48,8 @@ public class PlayerController : EntityBehaviour<IPhysicState>
         if (entity.HasControl)
         {
             _hasControl = true;
-            GUI_Controller.Current.Show(true);
+            GameController.Current.localPlayer = gameObject;
+            //GUI_Controller.Current.Show(true);
         }
 
         Init(entity.HasControl);
@@ -62,11 +70,45 @@ public class PlayerController : EntityBehaviour<IPhysicState>
             FindObjectOfType<PlayerSetupController>().SceneCamera.gameObject.SetActive(false);
         }
     }
+    //WILL NEED TO CHANGE THIS TO ACCOMODATE HYPERSHOP
+    private void ResetKeys()
+    {
+        _forward = false;
+        _backward = false;
+        _left = false;
+        _right = false;
+        _jump = false;
+
+        _fire = false;
+        _aiming = false;
+        _reload = false;
+        _drop = false;
+        _ability1 = false;
+        _ability2 = false;
+        _diffuse = false;
+    }
 
     private void Update()
     {
         if (_hasControl)
-            PollKeys();
+        {
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                if (_isInMenu)
+                    Cursor.lockState = CursorLockMode.Locked;
+                else
+                {
+                    Cursor.lockState = CursorLockMode.None;
+                    ResetKeys();
+                }
+                _isInMenu ^= true;
+                GUI_Controller.Current.ShowShop(_isInMenu);
+            }
+
+            if (!_isInMenu)
+                PollKeys();
+        }
+            
     }
 
     private void PollKeys()

@@ -29,6 +29,11 @@ public class HeadlessServerManager : Photon.Bolt.GlobalEventListener
         return s_map;
     }
 
+    public static void SetMap(string s)
+    {
+        s_map = s;
+    }
+
     /*
     public override void BoltStartBegin()
     {

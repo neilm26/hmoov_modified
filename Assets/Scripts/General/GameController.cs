@@ -32,6 +32,14 @@ public class GameController : EntityEventListener<IGameModeState>
 
     public bool IsInSite { get => _ASite.IsPlayerIn || _BSite.IsPlayerIn; }
 
+    private GameObject _localPlayer = null;
+
+    public GameObject localPlayer
+    {
+        get => _localPlayer;
+        set => _localPlayer = value;
+    }
+
     private void Start()
     {
         _walls = GameObject.Find("__Walls");

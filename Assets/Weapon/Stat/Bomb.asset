@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d51bd4adeed4a324ba21a602fc14c316, type: 3}
   m_Name: Bomb
   m_EditorClassIdentifier: 
-  ID: 7
+  ID: 9
   weaponName: Dynamite
   reloadTime: 0
   magazin: 0
@@ -23,6 +23,9 @@ MonoBehaviour:
   dmg: 0
   maxRange: 0
   precision: 0
+  canScope: 0
+  scopePrecision: 0.5
+  scopeSensitivity: 0.5
   trail: {fileID: 0}
   decal: {fileID: 0}
   impact: {fileID: 0}
