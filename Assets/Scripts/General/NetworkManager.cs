@@ -38,8 +38,8 @@ public class NetworkManager : Photon.Bolt.GlobalEventListener
     public override void SessionListUpdated(Map<Guid, UdpSession> sessionList)
     {
         FeedbackUser("Searching....");
-        BoltMatchmaking.JoinRandomSession();
-        //BoltMatchmaking.JoinSession(HeadlessServerManager.RoomID());
+        //BoltMatchmaking.JoinRandomSession();
+        BoltMatchmaking.JoinSession(HeadlessServerManager.RoomID());
         //Debug.Log("ran SessionListUpdated");
     }
 
