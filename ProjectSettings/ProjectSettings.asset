@@ -595,6 +595,7 @@ PlayerSettings:
   webGLDecompressionFallback: 0
   scriptingDefineSymbols:
     1: BOLT_CLOUD;BOLT_1_3_OR_NEWER;ENABLE_PLAYFABSERVER_API
+    13: BOLT_CLOUD;BOLT_1_3_OR_NEWER
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}
