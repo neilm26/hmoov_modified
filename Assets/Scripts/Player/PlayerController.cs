@@ -23,6 +23,12 @@ public class PlayerController : EntityBehaviour<IPhysicState>
     private bool _ability2;
     private bool _diffuse;
 
+    //additional movement
+    private bool _crouch;
+    private bool _headFirst;
+    private bool _feetFirst;
+    private bool _meleeFire;
+
     private bool _hasControl = false;
     private bool _isInMenu = false;
 
@@ -86,6 +92,11 @@ public class PlayerController : EntityBehaviour<IPhysicState>
         _ability1 = false;
         _ability2 = false;
         _diffuse = false;
+
+        _crouch = false;
+        _headFirst = false;
+        _feetFirst = false;
+        _meleeFire = false;
     }
 
     private void Update()
@@ -122,11 +133,18 @@ public class PlayerController : EntityBehaviour<IPhysicState>
         _fire = Input.GetMouseButton(0);
         _aiming = Input.GetMouseButton(1);
         _reload = Input.GetKey(KeyCode.R);
+
+
         _drop = Input.GetKey(KeyCode.V);
 
         _ability1 = Input.GetKey(KeyCode.Q);
         _ability2 = Input.GetKey(KeyCode.G);
-        _diffuse = Input.GetKey(KeyCode.F);
+        _diffuse = Input.GetKey(KeyCode.E);
+
+        _crouch = Input.GetKey(KeyCode.X);
+        _feetFirst = Input.GetKey(KeyCode.Z);
+        _headFirst = Input.GetKey(KeyCode.C);
+        _meleeFire = Input.GetKey(KeyCode.F);
 
         _yaw += Input.GetAxisRaw("Mouse X") * _mouseSensitivity;
         _yaw %= 360f;
@@ -160,12 +178,16 @@ public class PlayerController : EntityBehaviour<IPhysicState>
         input.Ability2 = _ability2;
         input.Diffuse = _diffuse;
 
+        input.Crouch = _crouch;
+        input.HeadFirst = _headFirst;
+        input.FeetFirst = _feetFirst;
+        input.MeleeFire = _meleeFire;
 
 
         entity.QueueInput(input);
 
-        _playerMotor.ExecuteCommand(_forward, _backward, _left, _right, _jump, _yaw, _pitch, _ability1, _ability2, _diffuse);
-        _playerWeapons.ExecuteCommand(_fire, _aiming, _reload, _wheel, BoltNetwork.ServerFrame % 1024, _drop);
+        _playerMotor.ExecuteCommand(_forward, _backward, _left, _right, _jump, _yaw, _pitch, _ability1, _ability2, _diffuse, _crouch, _headFirst, _feetFirst);
+        _playerWeapons.ExecuteCommand(_fire, _aiming, _reload, _wheel, BoltNetwork.ServerFrame % 1024, _drop, _meleeFire);
     }
 
 
@@ -193,7 +215,10 @@ public class PlayerController : EntityBehaviour<IPhysicState>
                 cmd.Input.Pitch,
                 cmd.Input.Ability1,
                 cmd.Input.Ability2,
-                cmd.Input.Diffuse);
+                cmd.Input.Diffuse,
+                cmd.Input.Crouch,
+                cmd.Input.HeadFirst,
+                cmd.Input.FeetFirst);
 
                 _playerWeapons.ExecuteCommand(
                 cmd.Input.Fire,
@@ -201,7 +226,8 @@ public class PlayerController : EntityBehaviour<IPhysicState>
                 cmd.Input.Reload,
                 cmd.Input.Wheel,
                 cmd.ServerFrame % 1024,
-                cmd.Input.Drop);
+                cmd.Input.Drop,
+                cmd.Input.MeleeFire);
             }
 
             cmd.Result.Position = motorState.position;

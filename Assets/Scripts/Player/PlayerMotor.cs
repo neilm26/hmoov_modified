@@ -97,7 +97,7 @@ public class PlayerMotor : EntityBehaviour<IPlayerState>
             _isEnemy = true;
     }
 
-    public State ExecuteCommand(bool forward, bool backward, bool left, bool right, bool jump, float yaw, float pitch, bool ability1, bool ability2, bool defuse)
+    public State ExecuteCommand(bool forward, bool backward, bool left, bool right, bool jump, float yaw, float pitch, bool ability1, bool ability2, bool defuse, bool crouch, bool headFirst, bool feetFirst)
     {
         if (!state.IsDead)
         {
