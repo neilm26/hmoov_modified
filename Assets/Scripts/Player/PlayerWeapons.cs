@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using Photon.Bolt;
 
@@ -32,6 +32,7 @@ public class PlayerWeapons : Photon.Bolt.EntityBehaviour<IPlayerState>
     public void Init()
     {
         Debug.Log("Init in PlayerWeapons.cs is running");
+        Debug.Log("Length of weapons:" + _weapons.Length);
         if (entity.IsOwner)
         {
             Debug.Log("entity.IsOwner returned true");
@@ -61,7 +62,7 @@ public class PlayerWeapons : Photon.Bolt.EntityBehaviour<IPlayerState>
 
 
 
-    public void ExecuteCommand(bool fire, bool aiming, bool reload, int wheel, int seed, bool drop, bool meleeFire)
+    public void ExecuteCommand(bool fire, bool aiming, bool reload, int wheel, int seed, bool drop)
     {
         if(wheel != state.WeaponIndex)
         {
@@ -70,6 +71,8 @@ public class PlayerWeapons : Photon.Bolt.EntityBehaviour<IPlayerState>
                     state.WeaponIndex = wheel;
             Debug.Log(wheel);
         }
+
+        
         //Debug.Log("ExecuteCommand in PlayerWeapons.cs is running"); confirmed to be running
         if(_weapons[_weaponIndex])
             _weapons[_weaponIndex].ExecuteCommand(fire, aiming, reload, seed);
@@ -294,20 +297,6 @@ public class PlayerWeapons : Photon.Bolt.EntityBehaviour<IPlayerState>
         Debug.Log("ran AddWeaponEvent(int i, int ca, int ta) in PlayerWeapons.cs");
     }
 
-    void DropOnBuy(WeaponID id, int w)
-    {
-        if (entity.IsOwner)
-        {
-            WeaponDropToken token = new WeaponDropToken();
-            token.ID = id;
-            token.currentAmmo = _weapons[w].CurrentAmmo;
-            token.totalAmmo = _weapons[w].TotalAmmo;
-            token.networkId = entity.NetworkId;
-            BoltNetwork.Instantiate(_weapons[w].WeaponStat.drop, token, Cam.transform.position + Cam.transform.forward, Quaternion.LookRotation(Cam.transform.forward));
-        }
-
-        Destroy(_weapons[w].gameObject);
-    }
     public void AddWeapon(WeaponID id)
     {
         if (id == WeaponID.None)
@@ -327,16 +316,12 @@ public class PlayerWeapons : Photon.Bolt.EntityBehaviour<IPlayerState>
 
         if(id < WeaponID.SecondaryEnd)
         {
-            if (_secondary != WeaponID.None)
-                DropOnBuy(id, 1);
             _secondary = id;
             _weapons[1] = prefab.GetComponent<Weapon>();
             prefab.GetComponent<Weapon>().Init(this, 1);
         }
         else if (id != WeaponID.Bomb)
         {
-            if (_primary != WeaponID.None)
-                DropOnBuy(id, 2);
             _primary = id;
             _weapons[2] = prefab.GetComponent<Weapon>();
             prefab.GetComponent<Weapon>().Init(this, 2);
