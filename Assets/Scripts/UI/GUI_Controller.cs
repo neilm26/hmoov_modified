@@ -67,10 +67,17 @@ public class GUI_Controller : MonoBehaviour
     private Text _money = null;
 
     [SerializeField]
+    private Button _attachmentbutton = null;
+
+    [SerializeField]
     private GameObject _scope = null;
 
     [SerializeField]
     private UI_Shop _shop = null;
+
+    [SerializeField]
+    private UI_AttachmentPanel _attachmentPanel = null;
+
 
     public UI_Shop shop { get => _shop; }
     private void Start()
@@ -99,7 +106,7 @@ public class GUI_Controller : MonoBehaviour
         //best to go with a system where you are given a new shop screen and or 3rd person spectator view with shop screen while waiting to respawn 
         if (_shop.gameObject.activeSelf)
             _shop.gameObject.SetActive(active);
-    }
+        }
 
     public void UpdateLife(int current, int total)
     {
@@ -224,6 +231,10 @@ public class GUI_Controller : MonoBehaviour
     public void ShowShop(bool show)
     {
         _shop.gameObject.SetActive(show);
+    }
+
+    public void ShowAttachmentPanel(bool show) {
+        _attachmentPanel.gameObject.SetActive(show);
     }
 
     public void UpdateShop(int e, int m)
