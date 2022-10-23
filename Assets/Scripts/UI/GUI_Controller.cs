@@ -234,6 +234,7 @@ public class GUI_Controller : MonoBehaviour
     }
 
     public void ShowAttachmentPanel(bool show) {
+        _instance.gameObject.SetActive(!show);
         _attachmentPanel.gameObject.SetActive(show);
     }
 

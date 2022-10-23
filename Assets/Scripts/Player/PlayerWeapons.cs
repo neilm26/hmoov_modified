@@ -62,7 +62,7 @@ public class PlayerWeapons : Photon.Bolt.EntityBehaviour<IPlayerState>
 
 
 
-    public void ExecuteCommand(bool fire, bool aiming, bool reload, int wheel, int seed, bool drop)
+    public void ExecuteCommand(bool fire, bool aiming, bool reload, int wheel, int seed, bool drop, bool _meleeFire)
     {
         if(wheel != state.WeaponIndex)
         {
